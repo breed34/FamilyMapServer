@@ -1,0 +1,54 @@
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS person;
+DROP TABLE IF EXISTS event;
+DROP TABLE IF EXISTS auth_token;
+
+CREATE TABLE user
+(
+	username VARCHAR(255) PRIMARY KEY NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+	firstName VARCHAR(255) NOT NULL,
+	lastName VARCHAR(255) NOT NULL,
+	gender VARCHAR(1) NOT NULL,
+	personId VARCHAR(255) NOT NULL,
+	FOREIGN KEY(personId) REFERENCES person(personId)
+);
+
+CREATE TABLE person
+(
+	personId VARCHAR(255) PRIMARY KEY NOT NULL,
+	associatedUsername VARCHAR(255) NOT NULL,
+	firstName VARCHAR(255) NOT NULL,
+	lastName VARCHAR(255) NOT NULL,
+	gender VARCHAR(1) NOT NULL,
+	fatherId VARCHAR(255),
+	motherId VARCHAR(255),
+	spouseId VARCHAR(255),
+	FOREIGN KEY(associatedUsername) REFERENCES user(username),
+	FOREIGN KEY(fatherId) REFERENCES person(personId),
+	FOREIGN KEY(motherId) REFERENCES person(personId),
+	FOREIGN KEY(spouseId) REFERENCES person(personId)
+);
+
+CREATE TABLE event
+(
+	eventId VARCHAR(255) PRIMARY KEY NOT NULL,
+	associatedUsername VARCHAR(255) NOT NULL,
+	personId VARCHAR(255) NOT NULL,
+	latitude FLOAT NOT NULL,
+	longitude FLOAT NOT NULL,
+	country VARCHAR(255) NOT NULL,
+	city VARCHAR(255) NOT NULL,
+	eventType VARCHAR(255) NOT NULL,
+	year INTEGER NOT NULL,
+	FOREIGN KEY(associatedUsername) REFERENCES user(username),
+	FOREIGN KEY(personId) REFERENCES person(personId)
+);
+
+CREATE TABLE auth_token
+(
+	authtoken VARCHAR(255) PRIMARY KEY NOT NULL,
+	username VARCHAR(255) NOT NULL,
+	FOREIGN KEY(username) REFERENCES user(username)
+);
