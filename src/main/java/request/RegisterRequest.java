@@ -1,0 +1,104 @@
+package request;
+
+/**
+ * The request object for registering a new user.
+ */
+public class RegisterRequest {
+    /**
+     * The new user's username.
+     */
+    private String username;
+
+    /**
+     * The new user's password.
+     */
+    private String password;
+
+    /**
+     * The new user's email address.
+     */
+    private String email;
+
+    /**
+     * The new user's first name.
+     */
+    private String firstName;
+
+    /**
+     * The new user's last name.
+     */
+    private String lastName;
+
+    /**
+     * The new user's gender. Must be "f" or "m".
+     */
+    private String gender;
+
+    /**
+     * Creates a request object for registering a new user.
+     *
+     * @param username the new user's username.
+     * @param password the new user's password.
+     * @param email the new user's email address.
+     * @param firstName the new user's first name.
+     * @param lastName the new user's last name.
+     * @param gender the new user's gender. Must be "f" or "m".
+     */
+    public RegisterRequest(String username, String password, String email, String firstName,
+                           String lastName, String gender) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+}
