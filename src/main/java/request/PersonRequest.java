@@ -10,7 +10,7 @@ public class PersonRequest {
     private String personId;
 
     /**
-     * Creates an object for getting a person by their personId.
+     * Creates a request object for getting a person by their personId.
      *
      * @param personId the personId of the person to get from the database.
      */

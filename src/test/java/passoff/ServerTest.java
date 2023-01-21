@@ -1,5 +1,6 @@
 package passoff;
 
+import client.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.*;
 import passoffmodels.*;
 import passoffrequest.*;
 import passoffresult.*;
-import client.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
