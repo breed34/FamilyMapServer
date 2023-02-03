@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 /**
  * Represents a person linked in a user's family.
  */
@@ -83,6 +85,27 @@ public class Person {
         this.fatherId = fatherId;
         this.motherId = motherId;
         this.spouseId = spouseId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        Person person = (Person)obj;
+        return Objects.equals(personId, person.personId) &&
+                Objects.equals(associatedUsername, person.associatedUsername) &&
+                Objects.equals(firstName, person.firstName) &&
+                Objects.equals(lastName, person.lastName) &&
+                Objects.equals(gender, person.gender) &&
+                Objects.equals(fatherId, person.fatherId) &&
+                Objects.equals(motherId, person.motherId) &&
+                Objects.equals(spouseId, person.spouseId);
     }
 
     public String getPersonId() {

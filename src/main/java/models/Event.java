@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 /**
  * Represents an event in a person's life.
  */
@@ -73,6 +75,28 @@ public class Event {
         this.city = city;
         this.eventType = eventType;
         this.year = year;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        Event event = (Event)obj;
+        return Objects.equals(eventId, event.eventId) &&
+                Objects.equals(associatedUsername, event.associatedUsername) &&
+                Objects.equals(personId, event.personId) &&
+                latitude == event.latitude &&
+                longitude == event.longitude &&
+                Objects.equals(country, event.country) &&
+                Objects.equals(city, event.city) &&
+                Objects.equals(eventType, event.eventType) &&
+                Objects.equals(year, event.year);
     }
 
     public String getEventId() {

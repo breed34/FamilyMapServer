@@ -46,7 +46,7 @@ CREATE TABLE event
 	FOREIGN KEY(personId) REFERENCES person(personId)
 );
 
-CREATE TABLE auth_token
+CREATE TABLE authtoken
 (
 	authtoken VARCHAR(255) PRIMARY KEY NOT NULL,
 	username VARCHAR(255) NOT NULL,

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 /**
  * An authorization token for the active user.
  */
@@ -23,6 +25,21 @@ public class Authtoken {
     public Authtoken(String authtoken, String username) {
         this.authtoken = authtoken;
         this.username = username;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        Authtoken token = (Authtoken)obj;
+        return Objects.equals(authtoken, token.authtoken) &&
+                Objects.equals(username, token.username);
     }
 
     public String getAuthtoken() {
