@@ -88,13 +88,25 @@ public class PersonDaoTest {
     }
 
     @Test
-    public void clearPass() throws DataAccessException {
+    public void clearDoesNotThrowException() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
         personDao.clear();
-        Person compareTest1 = personDao.find(samplePerson1.getPersonId());
-        Person compareTest2 = personDao.find(samplePerson1.getPersonId());
-        assertNull(compareTest1);
-        assertNull(compareTest2);
+    }
+
+    @Test
+    public void clearDataIsRemovedFromDatabase() throws DataAccessException {
+        personDao.insert(samplePerson1);
+        personDao.insert(samplePerson2);
+        Person shouldFind1 = personDao.find(samplePerson1.getPersonId());
+        Person shouldFind2 = personDao.find(samplePerson2.getPersonId());
+        assertNotNull(shouldFind1);
+        assertNotNull(shouldFind2);
+
+        personDao.clear();
+        Person shouldNotFind1 = personDao.find(samplePerson1.getPersonId());
+        Person shouldNotFind2 = personDao.find(samplePerson2.getPersonId());
+        assertNull(shouldNotFind1);
+        assertNull(shouldNotFind2);
     }
 }

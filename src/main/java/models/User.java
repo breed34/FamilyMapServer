@@ -63,6 +63,12 @@ public class User {
         this.personId = personId;
     }
 
+    /**
+     * Checks whether two users are equal.
+     *
+     * @param obj the user compare with this.
+     * @return whether the users are equal.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) {

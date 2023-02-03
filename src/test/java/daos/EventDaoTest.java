@@ -1,6 +1,7 @@
 package daos;
 
 import exceptions.DataAccessException;
+import models.Authtoken;
 import models.Event;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,13 +91,25 @@ public class EventDaoTest {
     }
 
     @Test
-    public void clearPass() throws DataAccessException {
+    public void clearDoesNotThrowException() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
         eventDao.clear();
-        Event compareTest1 = eventDao.find(sampleEvent1.getEventId());
-        Event compareTest2 = eventDao.find(sampleEvent1.getEventId());
-        assertNull(compareTest1);
-        assertNull(compareTest2);
+    }
+
+    @Test
+    public void clearDataIsRemovedFromDatabase() throws DataAccessException {
+        eventDao.insert(sampleEvent1);
+        eventDao.insert(sampleEvent2);
+        Event shouldFind1 = eventDao.find(sampleEvent1.getEventId());
+        Event shouldFind2 = eventDao.find(sampleEvent2.getEventId());
+        assertNotNull(shouldFind1);
+        assertNotNull(shouldFind2);
+
+        eventDao.clear();
+        Event shouldNotFind1 = eventDao.find(sampleEvent1.getEventId());
+        Event shouldNotFind2 = eventDao.find(sampleEvent2.getEventId());
+        assertNull(shouldNotFind1);
+        assertNull(shouldNotFind2);
     }
 }

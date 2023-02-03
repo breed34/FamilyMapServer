@@ -27,6 +27,12 @@ public class Authtoken {
         this.username = username;
     }
 
+    /**
+     * Checks whether two authtokens are equal.
+     *
+     * @param obj the authtoken to compare with this.
+     * @return whether the authtokens are equal.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) {

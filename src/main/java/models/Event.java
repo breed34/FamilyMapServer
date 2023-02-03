@@ -77,6 +77,12 @@ public class Event {
         this.year = year;
     }
 
+    /**
+     * Checks whether two events are equal.
+     *
+     * @param obj the event compare with this.
+     * @return whether the events are equal.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) {

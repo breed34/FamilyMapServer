@@ -64,13 +64,25 @@ public class AuthtokenDaoTest {
     }
 
     @Test
-    public void clearPass() throws DataAccessException {
+    public void clearDoesNotThrowException() throws DataAccessException {
         authtokenDao.insert(sampleToken1);
         authtokenDao.insert(sampleToken2);
         authtokenDao.clear();
-        Authtoken compareTest1 = authtokenDao.find(sampleToken1.getAuthtoken());
-        Authtoken compareTest2 = authtokenDao.find(sampleToken1.getAuthtoken());
-        assertNull(compareTest1);
-        assertNull(compareTest2);
+    }
+
+    @Test
+    public void clearDataIsRemovedFromDatabase() throws DataAccessException {
+        authtokenDao.insert(sampleToken1);
+        authtokenDao.insert(sampleToken2);
+        Authtoken shouldFind1 = authtokenDao.find(sampleToken1.getAuthtoken());
+        Authtoken shouldFind2 = authtokenDao.find(sampleToken2.getAuthtoken());
+        assertNotNull(shouldFind1);
+        assertNotNull(shouldFind2);
+
+        authtokenDao.clear();
+        Authtoken shouldNotFind1 = authtokenDao.find(sampleToken1.getAuthtoken());
+        Authtoken shouldNotFind2 = authtokenDao.find(sampleToken2.getAuthtoken());
+        assertNull(shouldNotFind1);
+        assertNull(shouldNotFind2);
     }
 }
