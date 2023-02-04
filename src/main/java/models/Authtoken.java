@@ -44,7 +44,7 @@ public class Authtoken {
         }
 
         Authtoken token = (Authtoken)obj;
-        return Objects.equals(authtoken, token.authtoken) &&
+        return  Objects.equals(authtoken, token.authtoken) &&
                 Objects.equals(username, token.username);
     }
 

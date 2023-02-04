@@ -80,7 +80,7 @@ public class User {
         }
 
         User user = (User)obj;
-        return Objects.equals(username, user.username) &&
+        return  Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(firstName, user.firstName) &&

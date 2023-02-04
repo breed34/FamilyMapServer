@@ -104,7 +104,7 @@ public class Person {
         }
 
         Person person = (Person)obj;
-        return Objects.equals(personId, person.personId) &&
+        return  Objects.equals(personId, person.personId) &&
                 Objects.equals(associatedUsername, person.associatedUsername) &&
                 Objects.equals(firstName, person.firstName) &&
                 Objects.equals(lastName, person.lastName) &&

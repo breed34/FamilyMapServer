@@ -94,7 +94,7 @@ public class Event {
         }
 
         Event event = (Event)obj;
-        return Objects.equals(eventId, event.eventId) &&
+        return  Objects.equals(eventId, event.eventId) &&
                 Objects.equals(associatedUsername, event.associatedUsername) &&
                 Objects.equals(personId, event.personId) &&
                 latitude == event.latitude &&
