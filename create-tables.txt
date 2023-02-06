@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS person;
 DROP TABLE IF EXISTS event;
-DROP TABLE IF EXISTS auth_token;
+DROP TABLE IF EXISTS authtoken;
 
 CREATE TABLE user
 (
@@ -25,10 +25,7 @@ CREATE TABLE person
 	fatherId VARCHAR(255),
 	motherId VARCHAR(255),
 	spouseId VARCHAR(255),
-	FOREIGN KEY(associatedUsername) REFERENCES user(username),
-	FOREIGN KEY(fatherId) REFERENCES person(personId),
-	FOREIGN KEY(motherId) REFERENCES person(personId),
-	FOREIGN KEY(spouseId) REFERENCES person(personId)
+	FOREIGN KEY(associatedUsername) REFERENCES user(username) ON DELETE CASCADE
 );
 
 CREATE TABLE event
@@ -42,13 +39,13 @@ CREATE TABLE event
 	city VARCHAR(255) NOT NULL,
 	eventType VARCHAR(255) NOT NULL,
 	year INTEGER NOT NULL,
-	FOREIGN KEY(associatedUsername) REFERENCES user(username),
-	FOREIGN KEY(personId) REFERENCES person(personId)
+	FOREIGN KEY(personId) REFERENCES person(personId),
+	FOREIGN KEY(associatedUsername) REFERENCES user(username) ON DELETE CASCADE
 );
 
 CREATE TABLE authtoken
 (
 	authtoken VARCHAR(255) PRIMARY KEY NOT NULL,
 	username VARCHAR(255) NOT NULL,
-	FOREIGN KEY(username) REFERENCES user(username)
+	FOREIGN KEY(username) REFERENCES user(username) ON DELETE CASCADE
 );
