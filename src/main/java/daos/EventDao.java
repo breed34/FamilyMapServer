@@ -146,4 +146,22 @@ public class EventDao {
             throw new DataAccessException("Error encountered while clearing the event table");
         }
     }
+
+    /**
+     * Removes all the events from the database associated with a given user.
+     *
+     * @param  associatedUsername the username associated with the events to be removed.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public void clearByUser(String associatedUsername) throws DataAccessException {
+        String sql = "DELETE FROM Event WHERE AssociatedUsername = ?;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, associatedUsername);
+            stmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while clearing events by user.");
+        }
+    }
 }

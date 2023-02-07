@@ -1,5 +1,7 @@
 package services;
 
+import daos.*;
+import exceptions.DataAccessException;
 import result.ClearResult;
 
 /**
@@ -12,6 +14,22 @@ public class ClearService {
      * @return the result of the call to clear the entire database.
      */
     public ClearResult clear() {
-        return null;
+        Database db = new Database();
+        try {
+            db.openConnection();
+
+            new UserDao(db.getConnection()).clear();
+            new PersonDao(db.getConnection()).clear();
+            new AuthtokenDao(db.getConnection()).clear();
+            new EventDao(db.getConnection()).clear();
+
+            db.closeConnection(true);
+            return new ClearResult("Clear succeeded.", true);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            db.closeConnection(false);
+            return new ClearResult("Error: Could not clear database.", false);
+        }
     }
 }

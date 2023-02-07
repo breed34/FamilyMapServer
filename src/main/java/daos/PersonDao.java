@@ -142,4 +142,22 @@ public class PersonDao {
             throw new DataAccessException("Error encountered while clearing the person table");
         }
     }
+
+    /**
+     * Removes all the persons from the database associated with a given user.
+     *
+     * @param  associatedUsername the username associated with the events to be removed.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public void clearByUser(String associatedUsername) throws DataAccessException {
+        String sql = "DELETE FROM Person WHERE AssociatedUsername = ?;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, associatedUsername);
+            stmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while clearing events by user.");
+        }
+    }
 }

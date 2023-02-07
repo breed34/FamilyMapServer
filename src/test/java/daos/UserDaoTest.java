@@ -87,4 +87,20 @@ public class UserDaoTest {
         assertNull(shouldNotFind1);
         assertNull(shouldNotFind2);
     }
+
+    @Test
+    public void removeUserPass() throws DataAccessException {
+        userDao.insert(sampleUser1);
+        User shouldFind1 = userDao.find(sampleUser1.getUsername());
+        assertNotNull(shouldFind1);
+
+        userDao.removeUser(sampleUser1.getUsername());
+        User shouldNotFind1 = userDao.find(sampleUser1.getUsername());
+        assertNull(shouldNotFind1);
+    }
+
+    @Test
+    public void removeUserFail() throws DataAccessException {
+        userDao.removeUser("Some name");
+    }
 }

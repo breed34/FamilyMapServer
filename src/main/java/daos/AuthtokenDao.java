@@ -91,4 +91,22 @@ public class AuthtokenDao {
             throw new DataAccessException("Error encountered while clearing the authtoken table");
         }
     }
+
+    /**
+     * Removes the authtokens from the database associated with a given user.
+     *
+     * @param  username the username associated with the authtokens to be removed.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public void clearByUser(String username) throws DataAccessException {
+        String sql = "DELETE FROM Authtoken WHERE Username = ?;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while clearing authtokens by user.");
+        }
+    }
 }

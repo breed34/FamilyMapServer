@@ -43,4 +43,16 @@ public class RegisterResult extends ResultBase {
     public RegisterResult(String message) {
         super(message, false);
     }
+
+    public String getAuthtoken() {
+        return authtoken;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
 }

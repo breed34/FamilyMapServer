@@ -101,4 +101,22 @@ public class UserDao {
             throw new DataAccessException("Error encountered while clearing the user table");
         }
     }
+
+    /**
+     * Removes a user with a given username.
+     *
+     * @param  username the username of the user to be deleted.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public void removeUser(String username) throws DataAccessException {
+        String sql = "DELETE FROM User WHERE Username = ?;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while removing a user.");
+        }
+    }
 }
