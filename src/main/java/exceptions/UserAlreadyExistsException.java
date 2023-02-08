@@ -1,7 +1,7 @@
 package exceptions;
 
 /**
- * An exception to be thrown when a user, with a given username, already exists.
+ * An exception to be thrown when a user with a given username already exists.
  */
 public class UserAlreadyExistsException extends Exception {
     /**

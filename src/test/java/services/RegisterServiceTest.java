@@ -1,12 +1,12 @@
 package services;
 
-import models.Authtoken;
-import models.User;
+import exceptions.DataAccessException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.RegisterRequest;
 import result.RegisterResult;
+import utilities.TestExtensions;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,8 +22,8 @@ public class RegisterServiceTest {
     }
 
     @AfterEach
-    public void tearDown() {
-       new ClearService().clear();
+    public void tearDown() throws DataAccessException {
+        TestExtensions.clearDataByUser(sampleRequest.getUsername());
     }
 
     @Test

@@ -96,7 +96,7 @@ public class PersonDao {
      * @return a list of all the persons associated with an associated user or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<Person> findAll(String associatedUsername) throws DataAccessException {
+    public ArrayList<Person> findByUser(String associatedUsername) throws DataAccessException {
         ArrayList<Person> persons = new ArrayList<>();
         ResultSet rs;
         String sql = "SELECT * FROM Person WHERE AssociatedUsername = ?;";
@@ -123,7 +123,43 @@ public class PersonDao {
         }
         catch (SQLException e) {
             e.printStackTrace();
-            throw new DataAccessException("Error encountered while finding multiple persons in the database");
+            throw new DataAccessException("Error encountered while finding persons by username in the database");
+        }
+    }
+
+    /**
+     * Finds all persons in the database.
+     *
+     * @return a list of all the persons or null if none are found.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public ArrayList<Person> findAll() throws DataAccessException {
+        ArrayList<Person> persons = new ArrayList<>();
+        ResultSet rs;
+        String sql = "SELECT * FROM Person;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                persons.add(new Person(rs.getString("PersonId"),
+                        rs.getString("AssociatedUsername"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"),
+                        rs.getString("Gender"),
+                        rs.getString("FatherId"),
+                        rs.getString("MotherId"),
+                        rs.getString("SpouseId")));
+            }
+
+            if (persons.size() > 0) {
+                return persons;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while finding all persons in the database");
         }
     }
 

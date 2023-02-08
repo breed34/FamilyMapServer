@@ -67,6 +67,27 @@ public class PersonDaoTest {
     }
 
     @Test
+    public void findByUserPass() throws DataAccessException {
+        personDao.insert(samplePerson1);
+        personDao.insert(samplePerson2);
+        ArrayList<Person> expected = new ArrayList<>();
+        expected.add(samplePerson1);
+        expected.add(samplePerson2);
+
+        ArrayList<Person> compareTest = personDao.findByUser(samplePerson2.getAssociatedUsername());
+        assertNotNull(compareTest);
+        assertEquals(expected, compareTest);
+    }
+
+    @Test
+    public void findByUserFail() throws DataAccessException {
+        personDao.insert(samplePerson1);
+        personDao.insert(samplePerson2);
+        ArrayList<Person> compareTest = personDao.findByUser("DOES_NOT_EXIST");
+        assertNull(compareTest);
+    }
+
+    @Test
     public void findAllPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
@@ -74,28 +95,24 @@ public class PersonDaoTest {
         expected.add(samplePerson1);
         expected.add(samplePerson2);
 
-        ArrayList<Person> compareTest = personDao.findAll(samplePerson2.getAssociatedUsername());
+        ArrayList<Person> compareTest = personDao.findAll();
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
 
     @Test
     public void findAllFail() throws DataAccessException {
-        personDao.insert(samplePerson1);
-        personDao.insert(samplePerson2);
-        ArrayList<Person> compareTest = personDao.findAll("DOES_NOT_EXIST");
+        ArrayList<Person> compareTest = personDao.findAll();
         assertNull(compareTest);
     }
 
     @Test
-    public void clearDoesNotThrowException() throws DataAccessException {
-        personDao.insert(samplePerson1);
-        personDao.insert(samplePerson2);
-        personDao.clear();
+    public void clearWithoutDataPass() {
+        assertDoesNotThrow(() -> personDao.clear());
     }
 
     @Test
-    public void clearDataIsRemovedFromDatabase() throws DataAccessException {
+    public void clearWithDataPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
         Person shouldFind1 = personDao.find(samplePerson1.getPersonId());
@@ -108,5 +125,22 @@ public class PersonDaoTest {
         Person shouldNotFind2 = personDao.find(samplePerson2.getPersonId());
         assertNull(shouldNotFind1);
         assertNull(shouldNotFind2);
+    }
+
+    @Test
+    public void clearByUserWithoutDataPass() {
+        assertDoesNotThrow(() -> personDao.clearByUser("SomeUser"));
+    }
+
+    @Test
+    public void clearByUserWithDataPass() throws DataAccessException {
+        personDao.insert(samplePerson1);
+        personDao.insert(samplePerson2);
+        ArrayList<Person> shouldFind1 = personDao.findByUser(samplePerson1.getAssociatedUsername());
+        assertNotNull(shouldFind1);
+
+        personDao.clearByUser(samplePerson1.getAssociatedUsername());
+        ArrayList<Person> shouldNotFind1 = personDao.findByUser(samplePerson1.getAssociatedUsername());
+        assertNull(shouldNotFind1);
     }
 }

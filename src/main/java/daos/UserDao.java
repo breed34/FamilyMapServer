@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * The object for performing database operations with users.
@@ -83,6 +84,41 @@ public class UserDao {
         catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while finding a user in the database");
+        }
+    }
+
+    /**
+     * Finds all users in the database.
+     *
+     * @return a list of all users or null if none are found.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public ArrayList<User> findAll() throws DataAccessException {
+        ArrayList<User> users = new ArrayList<>();
+        ResultSet rs;
+        String sql = "SELECT * FROM User;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(new User(rs.getString("Username"),
+                        rs.getString("Password"),
+                        rs.getString("Email"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"),
+                        rs.getString("Gender"),
+                        rs.getString("PersonId")));
+            }
+
+            if (users.size() > 0) {
+                return users;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while finding all users in the database");
         }
     }
 

@@ -71,4 +71,36 @@ public class PersonResult extends ResultBase {
     public PersonResult(String message) {
         super(message, false);
     }
+
+    public String getAssociatedUsername() {
+        return associatedUsername;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getFatherId() {
+        return fatherId;
+    }
+
+    public String getMotherId() {
+        return motherId;
+    }
+
+    public String getSpouseId() {
+        return spouseId;
+    }
 }

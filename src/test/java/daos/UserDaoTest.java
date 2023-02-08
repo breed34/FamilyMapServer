@@ -1,12 +1,14 @@
 package daos;
 
 import exceptions.DataAccessException;
+import models.Person;
 import models.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,14 +68,31 @@ public class UserDaoTest {
     }
 
     @Test
-    public void clearDoesNotThrowException() throws DataAccessException {
+    public void findAllPass() throws DataAccessException {
         userDao.insert(sampleUser1);
         userDao.insert(sampleUser2);
-        userDao.clear();
+        ArrayList<User> expected = new ArrayList<>();
+        expected.add(sampleUser1);
+        expected.add(sampleUser2);
+
+        ArrayList<User> compareTest = userDao.findAll();
+        assertNotNull(compareTest);
+        assertEquals(expected, compareTest);
     }
 
     @Test
-    public void clearDataIsRemovedFromDatabase() throws DataAccessException {
+    public void findAllFail() throws DataAccessException {
+        ArrayList<User> compareTest = userDao.findAll();
+        assertNull(compareTest);
+    }
+
+    @Test
+    public void clearWithoutDataPass() {
+        assertDoesNotThrow(() -> userDao.clear());
+    }
+
+    @Test
+    public void clearWithDataPass() throws DataAccessException {
         userDao.insert(sampleUser1);
         userDao.insert(sampleUser2);
         User shouldFind1 = userDao.find(sampleUser1.getUsername());
@@ -89,7 +108,12 @@ public class UserDaoTest {
     }
 
     @Test
-    public void removeUserPass() throws DataAccessException {
+    public void removeUserWithoutDataPass() {
+        assertDoesNotThrow(() -> userDao.removeUser("SomeUser"));
+    }
+
+    @Test
+    public void removeUserWithDataPass() throws DataAccessException {
         userDao.insert(sampleUser1);
         User shouldFind1 = userDao.find(sampleUser1.getUsername());
         assertNotNull(shouldFind1);
@@ -97,10 +121,5 @@ public class UserDaoTest {
         userDao.removeUser(sampleUser1.getUsername());
         User shouldNotFind1 = userDao.find(sampleUser1.getUsername());
         assertNull(shouldNotFind1);
-    }
-
-    @Test
-    public void removeUserFail() throws DataAccessException {
-        userDao.removeUser("Some name");
     }
 }

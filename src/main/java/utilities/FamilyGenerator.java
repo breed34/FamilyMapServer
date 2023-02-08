@@ -62,17 +62,17 @@ public class FamilyGenerator {
      * @param person the current person to add data for.
      * @param username the username associated with this fake data.
      * @param birthYear the birth year of the current person.
-     * @param numGenerations the number of generations to generate for the current person.
+     * @param numberOfGenerations the number of generations to generate for the current person.
      * @throws DataAccessException if an error occurs in a database transaction.
      * @throws FileNotFoundException if the required json files can not be opened.
      */
     public static void generateGenerations(Connection conn, Person person, String username, int birthYear,
-                                           int numGenerations) throws DataAccessException, FileNotFoundException {
+                                           int numberOfGenerations) throws DataAccessException, FileNotFoundException {
         Person father = null;
         Person mother = null;
         FamilyGenerator generator = new FamilyGenerator();
 
-        if (numGenerations > 0) {
+        if (numberOfGenerations > 0) {
             father = generator.generatePerson(username, "m");
             mother = generator.generatePerson(username, "f");
 
@@ -84,8 +84,8 @@ public class FamilyGenerator {
             generator.addParentEvents(conn, father.getPersonId(),
                     mother.getPersonId(), username, fatherBirthYear, motherBirthYear);
 
-            generateGenerations(conn, father, username, fatherBirthYear, numGenerations - 1);
-            generateGenerations(conn, mother, username, motherBirthYear, numGenerations - 1);
+            generateGenerations(conn, father, username, fatherBirthYear, numberOfGenerations - 1);
+            generateGenerations(conn, mother, username, motherBirthYear, numberOfGenerations - 1);
         }
 
         generator.addBirthEvent(conn, person.getPersonId(), username, birthYear);
@@ -95,6 +95,15 @@ public class FamilyGenerator {
         }
 
         new PersonDao(conn).insert(person);
+    }
+
+    /**
+     * Generates a fake birth year for a user.
+     *
+     * @return the fake birth year.
+     */
+    public static int generateUserBirthYear() {
+        return LocalDate.now().getYear() - Extensions.getRandomIntInRange(18, 60);
     }
 
     private Person generatePerson(String username, String gender) {

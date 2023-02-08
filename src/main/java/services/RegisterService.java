@@ -3,16 +3,13 @@ package services;
 import daos.AuthtokenDao;
 import daos.Database;
 import daos.UserDao;
-import exceptions.UserAlreadyExistsException;
 import models.Authtoken;
 import models.Person;
 import models.User;
 import request.RegisterRequest;
 import result.RegisterResult;
-import utilities.Extensions;
 import utilities.FamilyGenerator;
 
-import java.time.LocalDate;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -35,9 +32,12 @@ public class RegisterService {
         Database db = new Database();
         try {
             db.openConnection();
+
             if (new UserDao(db.getConnection()).find(request.getUsername()) != null) {
                 String message = String.format("User with username \"%s\" already exists.", request.getUsername());
-                throw new UserAlreadyExistsException(message);
+                logger.info(message);
+                db.closeConnection(false);
+                return new RegisterResult("Error: A user with that username already exists.");
             }
 
             String userPersonId = UUID.randomUUID().toString();
@@ -45,7 +45,7 @@ public class RegisterService {
             new UserDao(db.getConnection()).insert(user);
 
             Person person = extractPerson(request, userPersonId);
-            int birthYear = generateUserBirthYear();
+            int birthYear = FamilyGenerator.generateUserBirthYear();
             FamilyGenerator.generateGenerations(db.getConnection(), person, request.getUsername(),
                     birthYear, 4);
 
@@ -56,15 +56,10 @@ public class RegisterService {
             db.closeConnection(true);
             return new RegisterResult(authtoken, user);
         }
-        catch (UserAlreadyExistsException ex) {
-            logger.info(ex.getMessage());
-            db.closeConnection(false);
-            return new RegisterResult("Error: A user with that username already exists.");
-        }
         catch (Exception ex) {
             ex.printStackTrace();
             db.closeConnection(false);
-            return new RegisterResult("Error: Unable to register user");
+            return new RegisterResult("Error: An error occurred while trying to register the user.");
         }
     }
 
@@ -84,9 +79,5 @@ public class RegisterService {
                 request.getFirstName(),
                 request.getLastName(),
                 request.getGender());
-    }
-
-    private int generateUserBirthYear() {
-        return LocalDate.now().getYear() - Extensions.getRandomIntInRange(18, 60);
     }
 }

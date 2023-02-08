@@ -2,7 +2,6 @@ package daos;
 
 import exceptions.DataAccessException;
 import models.Authtoken;
-import models.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,7 +53,7 @@ public class AuthtokenDao {
      * @return the desired authtoken object.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public Authtoken find(String authtoken) throws DataAccessException {
+    public Authtoken findByToken(String authtoken) throws DataAccessException {
         Authtoken token;
         ResultSet rs;
         String sql = "SELECT * FROM Authtoken WHERE Authtoken = ?;";
@@ -72,7 +71,36 @@ public class AuthtokenDao {
         }
         catch (SQLException e) {
             e.printStackTrace();
-            throw new DataAccessException("Error encountered while finding an authtoken in the database");
+            throw new DataAccessException("Error encountered while finding an authtoken by token in the database");
+        }
+    }
+
+    /**
+     * Finds an authtoken object by its associated username.
+     *
+     * @param username the username associated with the desired authtoken object.
+     * @return the desired authtoken object.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public Authtoken findByUser(String username) throws DataAccessException {
+        Authtoken token;
+        ResultSet rs;
+        String sql = "SELECT * FROM Authtoken WHERE Username = ?;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                token = new Authtoken(rs.getString("Authtoken"),
+                        rs.getString("Username"));
+                return token;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while finding an authtoken by username in the database");
         }
     }
 

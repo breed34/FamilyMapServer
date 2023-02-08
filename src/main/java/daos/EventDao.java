@@ -2,7 +2,6 @@ package daos;
 
 import exceptions.DataAccessException;
 import models.Event;
-import models.Person;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -99,7 +98,7 @@ public class EventDao {
      * @return a list of all the events associated with an associated user or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<Event> findAll(String associatedUsername) throws DataAccessException {
+    public ArrayList<Event> findByUser(String associatedUsername) throws DataAccessException {
         ArrayList<Event> events = new ArrayList<>();
         ResultSet rs;
         String sql = "SELECT * FROM Event WHERE AssociatedUsername = ?;";
@@ -127,7 +126,44 @@ public class EventDao {
         }
         catch (SQLException e) {
             e.printStackTrace();
-            throw new DataAccessException("Error encountered while finding multiple persons in the database");
+            throw new DataAccessException("Error encountered while finding events by user in the database");
+        }
+    }
+
+    /**
+     * Finds all events associated with an associated user.
+     *
+     * @return a list of all events or null if none are found.
+     * @throws DataAccessException if an error happens during the database transaction.
+     */
+    public ArrayList<Event> findAll() throws DataAccessException {
+        ArrayList<Event> events = new ArrayList<>();
+        ResultSet rs;
+        String sql = "SELECT * FROM Event";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                events.add(new Event(rs.getString("EventId"),
+                        rs.getString("AssociatedUsername"),
+                        rs.getString("PersonId"),
+                        rs.getFloat("Latitude"),
+                        rs.getFloat("Longitude"),
+                        rs.getString("Country"),
+                        rs.getString("City"),
+                        rs.getString("EventType"),
+                        rs.getInt("Year")));
+            }
+
+            if (events.size() > 0) {
+                return events;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while finding all events in the database");
         }
     }
 

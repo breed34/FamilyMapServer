@@ -29,7 +29,8 @@ public class ClearService {
         catch (Exception ex) {
             ex.printStackTrace();
             db.closeConnection(false);
-            return new ClearResult("Error: Could not clear database.", false);
+            return new ClearResult("Error: An error occurred while trying to clear the" +
+                    "database.", false);
         }
     }
 }

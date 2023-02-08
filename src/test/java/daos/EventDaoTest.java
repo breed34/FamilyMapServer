@@ -1,7 +1,6 @@
 package daos;
 
 import exceptions.DataAccessException;
-import models.Authtoken;
 import models.Event;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +69,27 @@ public class EventDaoTest {
     }
 
     @Test
+    public void findByUserPass() throws DataAccessException {
+        eventDao.insert(sampleEvent1);
+        eventDao.insert(sampleEvent2);
+        ArrayList<Event> expected = new ArrayList<>();
+        expected.add(sampleEvent1);
+        expected.add(sampleEvent2);
+
+        ArrayList<Event> compareTest = eventDao.findByUser(sampleEvent2.getAssociatedUsername());
+        assertNotNull(compareTest);
+        assertEquals(expected, compareTest);
+    }
+
+    @Test
+    public void findByUserFail() throws DataAccessException {
+        eventDao.insert(sampleEvent1);
+        eventDao.insert(sampleEvent2);
+        ArrayList<Event> compareTest = eventDao.findByUser("DOES_NOT_EXIST");
+        assertNull(compareTest);
+    }
+
+    @Test
     public void findAllPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
@@ -77,28 +97,24 @@ public class EventDaoTest {
         expected.add(sampleEvent1);
         expected.add(sampleEvent2);
 
-        ArrayList<Event> compareTest = eventDao.findAll(sampleEvent2.getAssociatedUsername());
+        ArrayList<Event> compareTest = eventDao.findAll();
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
 
     @Test
     public void findAllFail() throws DataAccessException {
-        eventDao.insert(sampleEvent1);
-        eventDao.insert(sampleEvent2);
-        ArrayList<Event> compareTest = eventDao.findAll("DOES_NOT_EXIST");
+        ArrayList<Event> compareTest = eventDao.findAll();
         assertNull(compareTest);
     }
 
     @Test
-    public void clearDoesNotThrowException() throws DataAccessException {
-        eventDao.insert(sampleEvent1);
-        eventDao.insert(sampleEvent2);
-        eventDao.clear();
+    public void clearWithoutDataPass() {
+        assertDoesNotThrow(() -> eventDao.clear());
     }
 
     @Test
-    public void clearDataIsRemovedFromDatabase() throws DataAccessException {
+    public void clearWithDataPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
         Event shouldFind1 = eventDao.find(sampleEvent1.getEventId());
@@ -111,5 +127,22 @@ public class EventDaoTest {
         Event shouldNotFind2 = eventDao.find(sampleEvent2.getEventId());
         assertNull(shouldNotFind1);
         assertNull(shouldNotFind2);
+    }
+
+    @Test
+    public void clearByUserWithoutDataPass() {
+        assertDoesNotThrow(() -> eventDao.clearByUser("SomeUser"));
+    }
+
+    @Test
+    public void clearByUserWithDataPass() throws DataAccessException {
+        eventDao.insert(sampleEvent1);
+        eventDao.insert(sampleEvent2);
+        ArrayList<Event> shouldFind1 = eventDao.findByUser(sampleEvent1.getAssociatedUsername());
+        assertNotNull(shouldFind1);
+
+        eventDao.clearByUser(sampleEvent1.getAssociatedUsername());
+        ArrayList<Event> shouldNotFind1 = eventDao.findByUser(sampleEvent1.getAssociatedUsername());
+        assertNull(shouldNotFind1);
     }
 }
