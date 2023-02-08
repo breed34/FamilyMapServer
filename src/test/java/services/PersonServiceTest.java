@@ -16,27 +16,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PersonServiceTest {
     private PersonService personService;
-    private Authtoken validAuthtoken;
-    private Authtoken invalidAuthtoken;
     private PersonRequest passRequest;
-    private PersonRequest failRequest;
+    private PersonRequest failRequestPersonNotFound;
+    private PersonRequest failRequestWrongUsername;
+    private PersonRequest failRequestInvalidAuthtoken;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
         personService = new PersonService();
 
-        validAuthtoken = TestExtensions.addAuthtoken();
+        Authtoken validAuthtoken = TestExtensions.addAuthtoken();
         passRequest = new PersonRequest(validAuthtoken, "Bob123");
-        failRequest = new PersonRequest(validAuthtoken, "SomeOtherPerson");
-        invalidAuthtoken = new Authtoken("Wrong", "SomeUser");
+        failRequestPersonNotFound = new PersonRequest(validAuthtoken, "SomeOtherPerson");
+        failRequestWrongUsername = new PersonRequest(validAuthtoken, "Janet456A");
 
-        addPerson();
+        Authtoken invalidAuthtoken = new Authtoken("Wrong", "SomeUser");
+        failRequestInvalidAuthtoken = new PersonRequest(invalidAuthtoken, "Bob123");
+
+        addPersons();
     }
 
     @AfterEach
     public void tearDown() throws DataAccessException {
         TestExtensions.removeAuthtoken();
-        removePerson();
+        removePersons();
     }
 
     @Test
@@ -52,36 +55,48 @@ public class PersonServiceTest {
     }
 
     @Test
-    void getPersonFailInvalidAuthtoken() {
-        PersonResult result = personService.getPerson(passRequest);
+    public void getPersonFailInvalidAuthtoken() {
+        PersonResult result = personService.getPerson(failRequestInvalidAuthtoken);
 
         assertFalse(result.isSuccess());
         assertEquals("Error: The authtoken provided was not valid.", result.getMessage());
     }
 
     @Test
-    void getPersonFailPersonNotFound() {
-        PersonResult result = personService.getPerson(failRequest);
+    public void getPersonFailPersonNotFound() {
+        PersonResult result = personService.getPerson(failRequestPersonNotFound);
 
         assertFalse(result.isSuccess());
         assertEquals("Error: The desired person was not found.", result.getMessage());
     }
 
-    private void addPerson() throws DataAccessException {
+    @Test
+    public void getPersonFailWrongUsername() {
+        PersonResult result = personService.getPerson(failRequestWrongUsername);
+
+        assertFalse(result.isSuccess());
+        assertEquals("Error: The desired person was not found.", result.getMessage());
+    }
+
+    private void addPersons() throws DataAccessException {
         Database db = new Database();
         db.openConnection();
 
-        Person person = new Person("Bob123", "Gale", "Bob",
+        Person person1 = new Person("Bob123", "Gale", "Bob",
                 "Henderson", "m");
-        new PersonDao(db.getConnection()).insert(person);
+        Person person2 = new Person("Janet456A", "James12", "Janet",
+                "Smith", "f", "Bob123A", "Mary789A", "Jordan912A");
+        new PersonDao(db.getConnection()).insert(person1);
+        new PersonDao(db.getConnection()).insert(person2);
         db.closeConnection(true);
     }
 
-    private void removePerson() throws DataAccessException {
+    private void removePersons() throws DataAccessException {
         Database db = new Database();
         db.openConnection();
 
         new PersonDao(db.getConnection()).clearByUser("Gale");
+        new PersonDao(db.getConnection()).clearByUser("James12");
         db.closeConnection(true);
     }
 

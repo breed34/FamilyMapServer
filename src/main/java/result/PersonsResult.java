@@ -34,4 +34,8 @@ public class PersonsResult extends ResultBase {
     public PersonsResult(String message) {
         super(message, false);
     }
+
+    public ArrayList<Person> getData() {
+        return data;
+    }
 }

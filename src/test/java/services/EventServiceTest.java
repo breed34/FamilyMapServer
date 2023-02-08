@@ -13,35 +13,37 @@ import result.EventResult;
 import utilities.TestExtensions;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventServiceTest {
     private EventService eventService;
-    private Authtoken validAuthtoken;
-    private Authtoken invalidAuthtoken;
     private EventRequest passRequest;
-    private EventRequest failRequest;
+    private EventRequest failRequestEventNotFound;
+    private EventRequest failRequestWrongUsername;
+    private EventRequest failRequestInvalidAuthtoken;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
         eventService = new EventService();
 
-        validAuthtoken = TestExtensions.addAuthtoken();
+        Authtoken validAuthtoken = TestExtensions.addAuthtoken();
         passRequest = new EventRequest(validAuthtoken, "Skiing_456A");
-        failRequest = new EventRequest(validAuthtoken, "SomeOtherEvent");
-        invalidAuthtoken = new Authtoken("Wrong", "SomeUser");
+        failRequestEventNotFound = new EventRequest(validAuthtoken, "SomeOtherEvent");
+        failRequestWrongUsername = new EventRequest(validAuthtoken, "Biking_123A");
 
-        addEvent();
+        Authtoken invalidAuthtoken = new Authtoken("Wrong", "SomeUser");
+        failRequestInvalidAuthtoken = new EventRequest(invalidAuthtoken, "Skiing_456A");
+
+        addEvents();
     }
 
     @AfterEach
     public void tearDown() throws DataAccessException {
         TestExtensions.removeAuthtoken();
-        removeEvent();
+        removeEvents();
     }
 
     @Test
-    public void getPersonPass() {
+    public void getEventPass() {
         Event expected = new Event("Skiing_456A", "Gale", "Gale123A",
                 47.2f, 120.3f, "USA", "Tucson",
                 "Skiing_Downhill", 2023);
@@ -54,37 +56,51 @@ public class EventServiceTest {
     }
 
     @Test
-    void getPersonFailInvalidAuthtoken() {
-        EventResult result = eventService.getEvent(passRequest);
+    public void getEventFailInvalidAuthtoken() {
+        EventResult result = eventService.getEvent(failRequestInvalidAuthtoken);
 
         assertFalse(result.isSuccess());
         assertEquals("Error: The authtoken provided was not valid.", result.getMessage());
     }
 
     @Test
-    void getPersonFailPersonNotFound() {
-        EventResult result = eventService.getEvent(failRequest);
+    public void getEventFailPersonNotFound() {
+        EventResult result = eventService.getEvent(failRequestEventNotFound);
 
         assertFalse(result.isSuccess());
         assertEquals("Error: The desired event was not found.", result.getMessage());
     }
 
-    private void addEvent() throws DataAccessException {
+    @Test
+    public void getEventFailWrongUsername() {
+        EventResult result = eventService.getEvent(failRequestWrongUsername);
+
+        assertFalse(result.isSuccess());
+        assertEquals("Error: The desired event was not found.", result.getMessage());
+    }
+
+    private void addEvents() throws DataAccessException {
         Database db = new Database();
         db.openConnection();
 
-        Event event = new Event("Skiing_456A", "Gale", "Gale123A",
+        Event event1 = new Event("Skiing_456A", "Gale", "Gale123A",
                 47.2f, 120.3f, "USA", "Tucson",
                 "Skiing_Downhill", 2023);
-        new EventDao(db.getConnection()).insert(event);
+        Event event2 = new Event("Biking_123A", "James12", "Gale123A",
+                35.9f, 140.1f, "Japan", "Ushiku",
+                "Biking_Around", 2016);
+        new EventDao(db.getConnection()).insert(event1);
+        new EventDao(db.getConnection()).insert(event2);
+
         db.closeConnection(true);
     }
 
-    private void removeEvent() throws DataAccessException {
+    private void removeEvents() throws DataAccessException {
         Database db = new Database();
         db.openConnection();
 
         new EventDao(db.getConnection()).clearByUser("Gale");
+        new EventDao(db.getConnection()).clearByUser("James12");
         db.closeConnection(true);
     }
 

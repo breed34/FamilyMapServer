@@ -3,17 +3,17 @@ package request;
 import models.Authtoken;
 
 /**
- * The request object for getting all persons
+ * The request object for getting all events
  * associated with the active user.
  */
-public class PersonsRequest extends AuthRequiredRequestBase {
+public class EventsRequest extends AuthRequiredRequestBase {
     /**
-     * Creates a request object for getting all persons
+     * Creates a request object for getting all events
      * associated with the active user.
      *
      * @param authtoken the authtoken of the active user.
      */
-    public PersonsRequest(Authtoken authtoken) {
+    public EventsRequest(Authtoken authtoken) {
         super(authtoken);
     }
 }
