@@ -2,11 +2,9 @@ package services;
 
 import daos.Database;
 import daos.EventDao;
-import models.Authtoken;
 import models.Event;
 import request.EventRequest;
 import result.EventResult;
-import utilities.Extensions;
 
 import java.util.logging.Logger;
 
@@ -20,7 +18,7 @@ public class EventService {
     private static final Logger logger = Logger.getLogger("Event Service");
 
     /**
-     * Gets an event from the database.
+     * Gets an event from the database if it is associated with the active user.
      *
      * @param request the request object for getting an event from the database.
      * @return the result of the call to get an event from the database.
@@ -30,14 +28,8 @@ public class EventService {
         try {
             db.openConnection();
 
-            if (!Extensions.isValidAuthtoken(db.getConnection(), request.getAuthtoken())) {
-                logger.info("Error: The authtoken provided was not valid.");
-                db.closeConnection(false);
-                return new EventResult("Error: The authtoken provided was not valid.");
-            }
-
             Event event = new EventDao(db.getConnection()).find(request.getEventId());
-            if (event == null || !request.getAuthtoken().getUsername().equals(event.getAssociatedUsername())) {
+            if (event == null || !event.getAssociatedUsername().equals(request.getActiveUserName())) {
                 logger.info("Error: The desired event was not found.");
                 db.closeConnection(false);
                 return new EventResult("Error: The desired event was not found.");

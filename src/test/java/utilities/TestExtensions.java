@@ -27,34 +27,4 @@ public class TestExtensions {
 
         db.closeConnection(true);
     }
-
-    /**
-     * Adds an authtoken to the database and returns that same token.
-     *
-     * @return the newly added authtoken.
-     * @throws DataAccessException if an error happens during the database transaction.
-     */
-    public static Authtoken addAuthtoken() throws DataAccessException {
-        Database db = new Database();
-        db.openConnection();
-
-        Authtoken authtoken = new Authtoken("abcd1234", "Gale");
-        new AuthtokenDao(db.getConnection()).insert(authtoken);
-        db.closeConnection(true);
-        return authtoken;
-    }
-
-    /**
-     * Removes the token created in the addAuthtoken() method.
-     *
-     * @see #addAuthtoken()
-     * @throws DataAccessException if an error happens during the database transaction.
-     */
-    public static void removeAuthtoken() throws DataAccessException {
-        Database db = new Database();
-        db.openConnection();
-
-        new AuthtokenDao(db.getConnection()).clearByUser("Gale");
-        db.closeConnection(true);
-    }
 }

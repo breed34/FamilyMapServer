@@ -3,39 +3,37 @@ package services;
 import daos.Database;
 import daos.PersonDao;
 import exceptions.DataAccessException;
-import models.Authtoken;
 import models.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.PersonRequest;
 import result.PersonResult;
-import utilities.TestExtensions;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PersonServiceTest {
     private PersonService personService;
-    private Authtoken validAuthtoken;
-    private Authtoken invalidAuthtoken;
     private PersonRequest passRequest;
-    private PersonRequest failRequest;
+    private PersonRequest failRequestWrongUser;
+    private PersonRequest failRequestNoSuchPerson;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
         personService = new PersonService();
+        passRequest = new PersonRequest("Bob123");
+        failRequestWrongUser = new PersonRequest("Bob123");
+        failRequestNoSuchPerson = new PersonRequest("SomeOtherPerson");
 
-        validAuthtoken = TestExtensions.addAuthtoken();
-        passRequest = new PersonRequest(validAuthtoken, "Bob123");
-        failRequest = new PersonRequest(validAuthtoken, "SomeOtherPerson");
-        invalidAuthtoken = new Authtoken("Wrong", "SomeUser");
+        passRequest.setActiveUserName("Gale");
+        failRequestWrongUser.setActiveUserName("Bob");
+        failRequestNoSuchPerson.setActiveUserName("Gale");
 
         addPerson();
     }
 
     @AfterEach
     public void tearDown() throws DataAccessException {
-        TestExtensions.removeAuthtoken();
         removePerson();
     }
 
@@ -52,16 +50,16 @@ public class PersonServiceTest {
     }
 
     @Test
-    void getPersonFailInvalidAuthtoken() {
-        PersonResult result = personService.getPerson(passRequest);
+    void getPersonFailWrongUser() {
+        PersonResult result = personService.getPerson(failRequestWrongUser);
 
         assertFalse(result.isSuccess());
-        assertEquals("Error: The authtoken provided was not valid.", result.getMessage());
+        assertEquals("Error: The desired person was not found.", result.getMessage());
     }
 
     @Test
-    void getPersonFailPersonNotFound() {
-        PersonResult result = personService.getPerson(failRequest);
+    void getPersonFailNoSuchPerson() {
+        PersonResult result = personService.getPerson(failRequestNoSuchPerson);
 
         assertFalse(result.isSuccess());
         assertEquals("Error: The desired person was not found.", result.getMessage());

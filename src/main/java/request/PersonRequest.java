@@ -1,11 +1,9 @@
 package request;
 
-import models.Authtoken;
-
 /**
  * The request object for getting a person by their personId.
  */
-public class PersonRequest extends AuthRequiredRequestBase {
+public class PersonRequest extends AuthenticatedRequest {
     /**
      * The personId of the person to get from the database.
      */
@@ -14,11 +12,9 @@ public class PersonRequest extends AuthRequiredRequestBase {
     /**
      * Creates a request object for getting a person by their personId.
      *
-     * @param authtoken the authtoken of the active user.
      * @param personId the personId of the person to get from the database.
      */
-    public PersonRequest(Authtoken authtoken, String personId) {
-        super(authtoken);
+    public PersonRequest(String personId) {
         this.personId = personId;
     }
 

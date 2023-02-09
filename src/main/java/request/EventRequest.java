@@ -1,11 +1,9 @@
 package request;
 
-import models.Authtoken;
-
 /**
  * The request object for getting an event by its eventId.
  */
-public class EventRequest extends AuthRequiredRequestBase {
+public class EventRequest extends AuthenticatedRequest {
     /**
      * The eventId of the event to get from the database.
      */
@@ -14,11 +12,9 @@ public class EventRequest extends AuthRequiredRequestBase {
     /**
      * Creates a request object for getting an event by its eventId.
      *
-     * @param authtoken the authtoken of the active user.
      * @param eventId the eventId of the event to get from the database.
      */
-    public EventRequest(Authtoken authtoken, String eventId) {
-        super(authtoken);
+    public EventRequest(String eventId) {
         this.eventId = eventId;
     }
 

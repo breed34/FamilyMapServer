@@ -3,45 +3,42 @@ package services;
 import daos.Database;
 import daos.EventDao;
 import exceptions.DataAccessException;
-import models.Authtoken;
 import models.Event;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.EventRequest;
 import result.EventResult;
-import utilities.TestExtensions;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventServiceTest {
     private EventService eventService;
-    private Authtoken validAuthtoken;
-    private Authtoken invalidAuthtoken;
     private EventRequest passRequest;
-    private EventRequest failRequest;
+    private EventRequest failRequestWrongUser;
+    private EventRequest failRequestNoSuchEvent;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
         eventService = new EventService();
+        passRequest = new EventRequest("Skiing_456A");
+        failRequestWrongUser = new EventRequest("Skiing_456A");
+        failRequestNoSuchEvent = new EventRequest("SomeOtherEvent");
 
-        validAuthtoken = TestExtensions.addAuthtoken();
-        passRequest = new EventRequest(validAuthtoken, "Skiing_456A");
-        failRequest = new EventRequest(validAuthtoken, "SomeOtherEvent");
-        invalidAuthtoken = new Authtoken("Wrong", "SomeUser");
+        passRequest.setActiveUserName("Gale");
+        failRequestWrongUser.setActiveUserName("Bob");
+        failRequestNoSuchEvent.setActiveUserName("Gale");
 
         addEvent();
     }
 
     @AfterEach
     public void tearDown() throws DataAccessException {
-        TestExtensions.removeAuthtoken();
         removeEvent();
     }
 
     @Test
-    public void getPersonPass() {
+    public void getEventPass() {
         Event expected = new Event("Skiing_456A", "Gale", "Gale123A",
                 47.2f, 120.3f, "USA", "Tucson",
                 "Skiing_Downhill", 2023);
@@ -54,16 +51,16 @@ public class EventServiceTest {
     }
 
     @Test
-    void getPersonFailInvalidAuthtoken() {
-        EventResult result = eventService.getEvent(passRequest);
+    void getEventFailWrongUser() {
+        EventResult result = eventService.getEvent(failRequestWrongUser);
 
         assertFalse(result.isSuccess());
-        assertEquals("Error: The authtoken provided was not valid.", result.getMessage());
+        assertEquals("Error: The desired event was not found.", result.getMessage());
     }
 
     @Test
-    void getPersonFailPersonNotFound() {
-        EventResult result = eventService.getEvent(failRequest);
+    void getEventFailNoSuchEvent() {
+        EventResult result = eventService.getEvent(failRequestNoSuchEvent);
 
         assertFalse(result.isSuccess());
         assertEquals("Error: The desired event was not found.", result.getMessage());

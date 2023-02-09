@@ -34,4 +34,8 @@ public class EventsResult extends ResultBase {
     public EventsResult(String message) {
         super(message, false);
     }
+
+    public ArrayList<Event> getData() {
+        return data;
+    }
 }

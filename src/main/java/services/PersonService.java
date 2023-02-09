@@ -2,11 +2,9 @@ package services;
 
 import daos.Database;
 import daos.PersonDao;
-import models.Authtoken;
 import models.Person;
 import request.PersonRequest;
 import result.PersonResult;
-import utilities.Extensions;
 
 import java.util.logging.Logger;
 
@@ -20,7 +18,7 @@ public class PersonService {
     private static final Logger logger = Logger.getLogger("Person Service");
 
     /**
-     * Gets a person from the database.
+     * Gets a person from the database if it is associated with the active user.
      *
      * @param request the request object for getting a person from the database.
      * @return the result of the call to get a person from the database.
@@ -30,14 +28,8 @@ public class PersonService {
         try {
             db.openConnection();
 
-            if (!Extensions.isValidAuthtoken(db.getConnection(), request.getAuthtoken())) {
-                logger.info("Error: The authtoken provided was not valid.");
-                db.closeConnection(false);
-                return new PersonResult("Error: The authtoken provided was not valid.");
-            }
-
             Person person = new PersonDao(db.getConnection()).find(request.getPersonId());
-            if (person == null || !request.getAuthtoken().getUsername().equals(person.getAssociatedUsername())) {
+            if (person == null || !person.getAssociatedUsername().equals(request.getActiveUserName())) {
                 logger.info("Error: The desired person was not found.");
                 db.closeConnection(false);
                 return new PersonResult("Error: The desired person was not found.");
