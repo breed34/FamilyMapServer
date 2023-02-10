@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.nio.file.Files;
 
 /**
- * The handler for serving web files.
+ * The handler object for serving web files.
  */
 public class FileHandler implements HttpHandler {
 
@@ -58,7 +58,7 @@ public class FileHandler implements HttpHandler {
             }
         }
         catch (IOException ex) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
             exchange.getResponseBody().close();
             ex.printStackTrace();
         }

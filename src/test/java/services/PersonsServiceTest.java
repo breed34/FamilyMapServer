@@ -7,7 +7,8 @@ import models.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.AuthenticatedRequest;
+import request.AuthRequiredRequestBase;
+import request.PersonsRequest;
 import result.PersonsResult;
 
 import java.util.ArrayList;
@@ -17,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PersonsServiceTest {
     private PersonsService personsService;
-    private AuthenticatedRequest passRequest;
-    private AuthenticatedRequest failRequest;
+    private PersonsRequest passRequest;
+    private PersonsRequest failRequest;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
         personsService = new PersonsService();
-        passRequest = new AuthenticatedRequest("Gale");
-        failRequest = new AuthenticatedRequest("Bob");
+        passRequest = new PersonsRequest("Gale");
+        failRequest = new PersonsRequest("Bob");
 
         addPersons();
     }

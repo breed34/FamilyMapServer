@@ -25,6 +25,16 @@ public class LoginRequest {
         this.password = password;
     }
 
+    /**
+     * Checks whether the request is valid.
+     *
+     * @return whether the request is valid.
+     */
+    public boolean isValid() {
+        return  username != null && !username.isBlank() &&
+                password != null && !password.isBlank();
+    }
+
     public String getUsername() {
         return username;
     }

@@ -1,7 +1,6 @@
 package services;
 
 import daos.*;
-import exceptions.DataAccessException;
 import result.ClearResult;
 
 /**

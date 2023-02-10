@@ -2,12 +2,9 @@ package services;
 
 import daos.Database;
 import daos.EventDao;
-import daos.PersonDao;
 import models.Event;
-import models.Person;
-import request.AuthenticatedRequest;
+import request.EventsRequest;
 import result.EventsResult;
-import result.PersonsResult;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -28,7 +25,12 @@ public class EventsService {
      * @param request the request object for getting all events associated with the active user from the database.
      * @return the result of the call all events associated with the active user from the database.
      */
-    public EventsResult getAllEvents(AuthenticatedRequest request) {
+    public EventsResult getAllEvents(EventsRequest request) {
+        if (!request.isValid()) {
+            logger.info("Error: Invalid get events request object.");
+            return new EventsResult("Error: Invalid request.");
+        }
+
         Database db = new Database();
         try {
             db.openConnection();

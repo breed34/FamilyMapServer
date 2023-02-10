@@ -3,9 +3,9 @@ package handlers;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import request.RegisterRequest;
-import result.RegisterResult;
-import services.RegisterService;
+import request.LoginRequest;
+import result.LoginResult;
+import services.LoginService;
 import utilities.Extensions;
 
 import java.io.IOException;
@@ -14,11 +14,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
- * The handler object for registering a new user.
+ * The handler object for logging in a user.
  */
-public class RegisterHandler implements HttpHandler {
+public class LoginHandler implements HttpHandler {
     /**
-     * Handles registering a new user.
+     * Handles logging in a user.
      *
      * @param exchange the exchange containing the request from the
      *                 client and used to send the response
@@ -31,8 +31,8 @@ public class RegisterHandler implements HttpHandler {
                 InputStream requestBody = exchange.getRequestBody();
                 String requestJson = Extensions.readString(requestBody);
 
-                RegisterRequest request = new Gson().fromJson(requestJson, RegisterRequest.class);
-                RegisterResult result = new RegisterService().register(request);
+                LoginRequest request = new Gson().fromJson(requestJson, LoginRequest.class);
+                LoginResult result = new LoginService().login(request);
 
                 if (result.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);

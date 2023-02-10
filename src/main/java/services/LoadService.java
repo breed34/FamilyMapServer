@@ -7,10 +7,18 @@ import models.User;
 import request.LoadRequest;
 import result.LoadResult;
 
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
 /**
  * The service for loading data directly into the database.
  */
 public class LoadService {
+    /**
+     * The LoadService logger.
+     */
+    private static final Logger logger = Logger.getLogger("Load Service");
+
     /**
      * Loads data directly into the database.
      *
@@ -18,6 +26,11 @@ public class LoadService {
      * @return the result of the call for loading data directly into the database.
      */
     public LoadResult load(LoadRequest request) {
+        if (!request.isValid()) {
+            logger.info("Error: Invalid load request object.");
+            return new LoadResult("Error: Invalid request.", false);
+        }
+
         Database db = new Database();
         try {
             db.openConnection();
@@ -39,9 +52,13 @@ public class LoadService {
                 new EventDao(db.getConnection()).insert(event);
             }
 
-            int numberOfUsers = new UserDao(db.getConnection()).findAll().size();
-            int numberOfPersons = new PersonDao(db.getConnection()).findAll().size();
-            int numberOfEvents = new EventDao(db.getConnection()).findAll().size();
+            ArrayList<User> newUsers = new UserDao(db.getConnection()).findAll();
+            ArrayList<Person> newPersons = new PersonDao(db.getConnection()).findAll();
+            ArrayList<Event> newEvents = new EventDao(db.getConnection()).findAll();
+
+            int numberOfUsers = newUsers != null ? newUsers.size() : 0;
+            int numberOfPersons = newPersons != null ? newPersons.size() : 0;
+            int numberOfEvents = newEvents != null ? newEvents.size() : 0;
 
             db.closeConnection(true);
 

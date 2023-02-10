@@ -3,22 +3,23 @@ package handlers;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import request.RegisterRequest;
-import result.RegisterResult;
-import services.RegisterService;
+import request.FillRequest;
+import result.FillResult;
+import services.FillService;
 import utilities.Extensions;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
- * The handler object for registering a new user.
+ * The handler object for filling the database with data
+ * for a given user.
  */
-public class RegisterHandler implements HttpHandler {
+public class FillHandler implements HttpHandler {
     /**
-     * Handles registering a new user.
+     * Handles filling the database with data
+     * for a given user.
      *
      * @param exchange the exchange containing the request from the
      *                 client and used to send the response
@@ -28,11 +29,9 @@ public class RegisterHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
-                InputStream requestBody = exchange.getRequestBody();
-                String requestJson = Extensions.readString(requestBody);
-
-                RegisterRequest request = new Gson().fromJson(requestJson, RegisterRequest.class);
-                RegisterResult result = new RegisterService().register(request);
+                String requestPath = exchange.getRequestURI().toString();
+                FillRequest request = getRequestFromPath(requestPath);
+                FillResult result = new FillService().fill(request);
 
                 if (result.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -57,5 +56,23 @@ public class RegisterHandler implements HttpHandler {
             exchange.getResponseBody().close();
             ex.printStackTrace();
         }
+    }
+
+    private FillRequest getRequestFromPath(String path) {
+        String[] pathParameters = path.split("/");
+        switch (pathParameters.length) {
+            case 3:
+                return new FillRequest(pathParameters[2]);
+            case 4:
+                if (pathParameters[3].matches("[0-9]+")) {
+                    return new FillRequest(pathParameters[2],
+                            Integer.parseInt(pathParameters[3]));
+                }
+                break;
+            default:
+                break;
+        }
+
+        return null;
     }
 }

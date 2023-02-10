@@ -24,6 +24,11 @@ public class PersonService {
      * @return the result of the call to get a person from the database.
      */
     public PersonResult getPerson(PersonRequest request) {
+        if (request == null || !request.isValid()) {
+            logger.info("Error: Invalid get person request object.");
+            return new PersonResult("Error: Invalid request.");
+        }
+
         Database db = new Database();
         try {
             db.openConnection();

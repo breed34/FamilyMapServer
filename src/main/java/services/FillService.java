@@ -28,6 +28,11 @@ public class FillService {
      * @return the result of the call to populate the database with data for a given user.
      */
     public FillResult fill(FillRequest request) {
+        if (request == null || !request.isValid()) {
+            logger.info("Error: Invalid fill request object.");
+            return new FillResult("Error: Invalid request.", false);
+        }
+
         Database db = new Database();
         try {
             db.openConnection();

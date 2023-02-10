@@ -3,8 +3,7 @@ package services;
 import daos.Database;
 import daos.PersonDao;
 import models.Person;
-import request.AuthenticatedRequest;
-import result.PersonResult;
+import request.PersonsRequest;
 import result.PersonsResult;
 
 import java.util.ArrayList;
@@ -26,7 +25,12 @@ public class PersonsService {
      * @param request the request object for getting all persons associated with the active user from the database.
      * @return the result of the call all persons associated with the active user from the database.
      */
-    public PersonsResult getAllPersons(AuthenticatedRequest request) {
+    public PersonsResult getAllPersons(PersonsRequest request) {
+        if (!request.isValid()) {
+            logger.info("Error: Invalid get persons request object.");
+            return new PersonsResult("Error: Invalid request.");
+        }
+
         Database db = new Database();
         try {
             db.openConnection();

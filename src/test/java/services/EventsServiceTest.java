@@ -7,7 +7,8 @@ import models.Event;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.AuthenticatedRequest;
+import request.EventsRequest;
+import request.PersonsRequest;
 import result.EventsResult;
 
 import java.util.ArrayList;
@@ -16,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EventsServiceTest {
     private EventsService eventsService;
-    private AuthenticatedRequest passRequest;
-    private AuthenticatedRequest failRequest;
+    private EventsRequest passRequest;
+    private EventsRequest failRequest;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
         eventsService = new EventsService();
-        passRequest = new AuthenticatedRequest("Gale");
-        failRequest = new AuthenticatedRequest("Bob");
+        passRequest = new EventsRequest("Gale");
+        failRequest = new EventsRequest("Bob");
 
         addEvents();
     }

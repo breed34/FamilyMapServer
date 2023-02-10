@@ -3,9 +3,11 @@ package handlers;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import request.RegisterRequest;
-import result.RegisterResult;
-import services.RegisterService;
+import request.LoadRequest;
+import result.ClearResult;
+import result.LoadResult;
+import services.ClearService;
+import services.LoadService;
 import utilities.Extensions;
 
 import java.io.IOException;
@@ -14,11 +16,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
- * The handler object for registering a new user.
+ * The handler object for loading data directly into the database.
  */
-public class RegisterHandler implements HttpHandler {
+public class LoadHandler implements HttpHandler {
     /**
-     * Handles registering a new user.
+     * Handles loading data directly into the database.
      *
      * @param exchange the exchange containing the request from the
      *                 client and used to send the response
@@ -31,8 +33,8 @@ public class RegisterHandler implements HttpHandler {
                 InputStream requestBody = exchange.getRequestBody();
                 String requestJson = Extensions.readString(requestBody);
 
-                RegisterRequest request = new Gson().fromJson(requestJson, RegisterRequest.class);
-                RegisterResult result = new RegisterService().register(request);
+                LoadRequest request = new Gson().fromJson(requestJson, LoadRequest.class);
+                LoadResult result = new LoadService().load(request);
 
                 if (result.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);

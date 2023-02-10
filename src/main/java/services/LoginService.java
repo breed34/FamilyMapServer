@@ -8,7 +8,7 @@ import models.User;
 import request.LoginRequest;
 import result.LoginResult;
 
-import javax.naming.AuthenticationException;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -27,6 +27,11 @@ public class LoginService {
      * @return the result of the call to log in a user.
      */
     public LoginResult login(LoginRequest request) {
+        if (!request.isValid()) {
+            logger.info("Error: Invalid login request object.");
+            return new LoginResult("Error: Invalid request.");
+        }
+
         Database db = new Database();
         try {
             db.openConnection();
@@ -38,7 +43,9 @@ public class LoginService {
                 return new LoginResult("Error: The username or password for the user was incorrect.");
             }
 
-            Authtoken authtoken = new AuthtokenDao(db.getConnection()).findByUser(request.getUsername());
+            String tokenString = UUID.randomUUID().toString();
+            Authtoken authtoken = new Authtoken(tokenString, request.getUsername());
+            new AuthtokenDao(db.getConnection()).insert(authtoken);
 
             db.closeConnection(true);
             return new LoginResult(authtoken, user);

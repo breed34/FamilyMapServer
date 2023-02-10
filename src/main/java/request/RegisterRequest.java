@@ -54,6 +54,20 @@ public class RegisterRequest {
         this.gender = gender;
     }
 
+    /**
+     * Checks whether the request is valid.
+     *
+     * @return whether the request is valid.
+     */
+    public boolean isValid() {
+        return  username != null && !username.isBlank() &&
+                password != null && !password.isBlank() &&
+                email != null && !email.isBlank() &&
+                firstName != null && !firstName.isBlank() &&
+                lastName != null && !lastName.isBlank() &&
+                (gender.toLowerCase().equals("m") || gender.toLowerCase().equals("f"));
+    }
+
     public String getUsername() {
         return username;
     }

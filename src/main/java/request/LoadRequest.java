@@ -38,6 +38,15 @@ public class LoadRequest {
         this.events = events;
     }
 
+    /**
+     * Checks whether the request is valid.
+     *
+     * @return whether the request is valid.
+     */
+    public boolean isValid() {
+        return users != null && persons != null && events != null;
+    }
+
     public ArrayList<User> getUsers() {
         return users;
     }

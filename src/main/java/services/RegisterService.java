@@ -29,6 +29,11 @@ public class RegisterService {
      * @return the result of the call to register a new user.
      */
     public RegisterResult register(RegisterRequest request) {
+        if (!request.isValid()) {
+            logger.info("Error: Invalid register request object.");
+            return new RegisterResult("Error: Invalid request.");
+        }
+
         Database db = new Database();
         try {
             db.openConnection();

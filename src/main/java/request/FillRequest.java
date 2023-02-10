@@ -39,6 +39,15 @@ public class FillRequest {
         this.generations = generations;
     }
 
+    /**
+     * Checks whether the request is valid.
+     *
+     * @return whether the request is valid.
+     */
+    public boolean isValid() {
+        return  username != null && !username.isBlank() && generations >= 0;
+    }
+
     public String getUsername() {
         return username;
     }
