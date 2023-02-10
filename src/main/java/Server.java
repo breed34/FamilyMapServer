@@ -3,8 +3,7 @@ import java.net.*;
 import java.util.logging.Logger;
 
 import com.sun.net.httpserver.*;
-import request.RegisterRequest;
-import services.RegisterService;
+import handlers.FileHandler;
 
 public class Server {
 	private static final int MAX_WAITING_CONNECTIONS = 12;
@@ -29,7 +28,7 @@ public class Server {
 		logger.info("Creating contexts");
 		// server.createContext("/games/list", new ListGamesHandler());
 		// server.createContext("/routes/claim", new ClaimRouteHandler());
-		// server.createContext("/", new FileHandler());
+		server.createContext("/", new FileHandler());
 
 		logger.info("Starting server");
 		server.start();
@@ -37,17 +36,8 @@ public class Server {
 	}
 
 	public static void main(String[] args) {		
-		// String portNumber = args[0];
-		// new Server().run(portNumber);
-
-		new RegisterService().register(new RegisterRequest(
-				"Bob123",
-				"teller767",
-				"Bob123@email.com",
-				"Bob",
-				"Smith",
-				"m")
-		);
+		String portNumber = args[0];
+		new Server().run(portNumber);
 	}
 }
 
