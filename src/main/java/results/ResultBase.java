@@ -1,4 +1,4 @@
-package result;
+package results;
 
 /**
  * The base result class.

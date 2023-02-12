@@ -2,4 +2,4 @@
  * Contains service result objects.
  */
 
-package result;
+package results;

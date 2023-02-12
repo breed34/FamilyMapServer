@@ -4,9 +4,9 @@ import exceptions.DataAccessException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.FillRequest;
-import request.RegisterRequest;
-import result.FillResult;
+import requests.FillRequest;
+import requests.RegisterRequest;
+import results.FillResult;
 import utilities.TestExtensions;
 
 import static org.junit.jupiter.api.Assertions.*;

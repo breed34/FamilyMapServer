@@ -1,12 +1,11 @@
 package services;
 
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.RegisterRequest;
-import result.ClearResult;
-import result.RegisterResult;
+import requests.RegisterRequest;
+import results.ClearResult;
+import results.RegisterResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 

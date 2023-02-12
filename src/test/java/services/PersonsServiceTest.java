@@ -7,9 +7,8 @@ import models.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.AuthRequiredRequestBase;
-import request.PersonsRequest;
-import result.PersonsResult;
+import requests.PersonsRequest;
+import results.PersonsResult;
 
 import java.util.ArrayList;
 

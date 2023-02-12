@@ -2,4 +2,4 @@
  * Contains service request objects.
  */
 
-package request;
+package requests;

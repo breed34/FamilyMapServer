@@ -1,7 +1,7 @@
 package services;
 
 import daos.*;
-import result.ClearResult;
+import results.ClearResult;
 
 /**
  * The service object for clearing the database.

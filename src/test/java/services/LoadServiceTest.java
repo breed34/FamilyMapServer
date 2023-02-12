@@ -6,8 +6,8 @@ import models.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.LoadRequest;
-import result.LoadResult;
+import requests.LoadRequest;
+import results.LoadResult;
 
 import java.util.ArrayList;
 

@@ -3,8 +3,8 @@ package services;
 import daos.Database;
 import daos.EventDao;
 import models.Event;
-import request.EventsRequest;
-import result.EventsResult;
+import requests.EventsRequest;
+import results.EventsResult;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;

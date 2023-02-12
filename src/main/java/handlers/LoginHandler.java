@@ -2,8 +2,8 @@ package handlers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import request.LoginRequest;
-import result.LoginResult;
+import requests.LoginRequest;
+import results.LoginResult;
 import services.LoginService;
 
 import java.io.IOException;

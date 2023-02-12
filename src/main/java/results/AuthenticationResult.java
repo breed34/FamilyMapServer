@@ -1,4 +1,4 @@
-package result;
+package results;
 
 /**
  * The result object for authenticating a given authtoken.

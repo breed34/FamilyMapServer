@@ -6,8 +6,8 @@ import daos.PersonDao;
 import daos.UserDao;
 import models.Person;
 import models.User;
-import request.FillRequest;
-import result.FillResult;
+import requests.FillRequest;
+import results.FillResult;
 import utilities.FamilyGenerator;
 
 import java.util.logging.Logger;

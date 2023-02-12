@@ -1,10 +1,10 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import request.AuthenticationRequest;
-import request.PersonRequest;
-import result.AuthenticationResult;
-import result.PersonResult;
+import requests.AuthenticationRequest;
+import requests.PersonRequest;
+import results.AuthenticationResult;
+import results.PersonResult;
 import services.AuthenticationService;
 import services.PersonService;
 

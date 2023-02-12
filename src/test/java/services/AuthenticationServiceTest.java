@@ -7,8 +7,8 @@ import models.Authtoken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.AuthenticationRequest;
-import result.AuthenticationResult;
+import requests.AuthenticationRequest;
+import results.AuthenticationResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -3,8 +3,8 @@ package services;
 import daos.Database;
 import daos.PersonDao;
 import models.Person;
-import request.PersonRequest;
-import result.PersonResult;
+import requests.PersonRequest;
+import results.PersonResult;
 
 import java.util.logging.Logger;
 

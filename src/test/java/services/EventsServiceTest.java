@@ -7,9 +7,8 @@ import models.Event;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import request.EventsRequest;
-import request.PersonsRequest;
-import result.EventsResult;
+import requests.EventsRequest;
+import results.EventsResult;
 
 import java.util.ArrayList;
 

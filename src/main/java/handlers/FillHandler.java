@@ -1,8 +1,8 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import request.FillRequest;
-import result.FillResult;
+import requests.FillRequest;
+import results.FillResult;
 import services.FillService;
 
 import java.io.IOException;

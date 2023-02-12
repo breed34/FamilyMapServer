@@ -5,8 +5,8 @@ import daos.Database;
 import daos.UserDao;
 import models.Authtoken;
 import models.User;
-import request.LoginRequest;
-import result.LoginResult;
+import requests.LoginRequest;
+import results.LoginResult;
 
 import java.util.UUID;
 import java.util.logging.Logger;

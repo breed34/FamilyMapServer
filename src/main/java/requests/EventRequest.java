@@ -1,4 +1,4 @@
-package request;
+package requests;
 
 /**
  * The request object for getting an event by its eventID.

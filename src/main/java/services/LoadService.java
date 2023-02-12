@@ -4,8 +4,8 @@ import daos.*;
 import models.Event;
 import models.Person;
 import models.User;
-import request.LoadRequest;
-import result.LoadResult;
+import requests.LoadRequest;
+import results.LoadResult;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;

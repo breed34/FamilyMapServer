@@ -1,4 +1,4 @@
-package request;
+package requests;
 
 import models.Event;
 import models.Person;

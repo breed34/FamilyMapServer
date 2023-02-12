@@ -1,4 +1,4 @@
-package result;
+package results;
 
 import models.Authtoken;
 import models.User;

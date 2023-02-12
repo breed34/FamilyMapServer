@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import result.ResultBase;
+import results.ResultBase;
 
 import java.io.*;
 import java.net.HttpURLConnection;

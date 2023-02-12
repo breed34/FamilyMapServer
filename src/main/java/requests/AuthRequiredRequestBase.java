@@ -1,4 +1,4 @@
-package request;
+package requests;
 
 /**
  * The request object for requests that require authentication.

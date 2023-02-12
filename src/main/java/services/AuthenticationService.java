@@ -3,8 +3,8 @@ package services;
 import daos.AuthtokenDao;
 import daos.Database;
 import models.Authtoken;
-import request.AuthenticationRequest;
-import result.AuthenticationResult;
+import requests.AuthenticationRequest;
+import results.AuthenticationResult;
 
 import java.util.logging.Logger;
 

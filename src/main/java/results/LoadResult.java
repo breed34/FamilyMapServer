@@ -1,4 +1,4 @@
-package result;
+package results;
 
 /**
  * The result object for loading data directly into the database.

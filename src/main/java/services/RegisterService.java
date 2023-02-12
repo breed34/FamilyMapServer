@@ -6,8 +6,8 @@ import daos.UserDao;
 import models.Authtoken;
 import models.Person;
 import models.User;
-import request.RegisterRequest;
-import result.RegisterResult;
+import requests.RegisterRequest;
+import results.RegisterResult;
 import utilities.FamilyGenerator;
 
 import java.util.UUID;

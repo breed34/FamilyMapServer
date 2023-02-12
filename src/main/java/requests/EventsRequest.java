@@ -1,4 +1,4 @@
-package request;
+package requests;
 
 /**
  * The request object for getting all events associated with
