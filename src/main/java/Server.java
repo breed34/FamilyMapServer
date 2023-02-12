@@ -23,6 +23,7 @@ public class Server {
 			e.printStackTrace();
 			return;
 		}
+
 		server.setExecutor(null);
 
 		logger.info("Registering handlers");
