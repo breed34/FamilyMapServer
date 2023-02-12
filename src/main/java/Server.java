@@ -5,6 +5,9 @@ import java.util.logging.Logger;
 import com.sun.net.httpserver.*;
 import handlers.*;
 
+/**
+ * The class that sets up and runs the server.
+ */
 public class Server {
 	private static final int MAX_WAITING_CONNECTIONS = 12;
 	private static final Logger logger = Logger.getLogger("Server");
@@ -43,6 +46,12 @@ public class Server {
 		logger.info("Server started");
 	}
 
+	/**
+	 * The main class that runs the server.
+	 *
+	 * @param args the program arguments, the first argument is used as the
+	 *             port on which to run the server.
+	 */
 	public static void main(String[] args) {		
 		String portNumber = args[0];
 		new Server().run(portNumber);
