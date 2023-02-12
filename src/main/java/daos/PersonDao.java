@@ -28,24 +28,16 @@ public class PersonDao {
     }
 
     /**
-     * Finds a person by their personId.
+     * Finds a person by their personID.
      *
      * @param person the person to insert into the database.
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void insert(Person person) throws DataAccessException {
-        String sql = "INSERT INTO Person (PersonId, AssociatedUsername, FirstName, LastName, " +
-                "Gender, FatherId, MotherId, SpouseId) VALUES(?,?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO person (personID, associatedUsername, firstName, lastName, " +
+                "gender, fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?);";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, person.getPersonId());
-            stmt.setString(2, person.getAssociatedUsername());
-            stmt.setString(3, person.getFirstName());
-            stmt.setString(4, person.getLastName());
-            stmt.setString(5, person.getGender());
-            stmt.setString(6, person.getFatherId());
-            stmt.setString(7, person.getMotherId());
-            stmt.setString(8, person.getSpouseId());
-
+            addPersonDataToStatement(person, stmt);
             stmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -55,33 +47,22 @@ public class PersonDao {
     }
 
     /**
-     * Finds a person by their personId.
+     * Finds a person by their personID and the username of the active user.
      *
-     * @param personId the personId of the desired person.
+     * @param personID the personID of the desired person.
+     * @param associatedUsername the username of the active user.
      * @return the desired person or null if none is found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public Person find(String personId) throws DataAccessException {
-        Person person;
+    public Person find(String personID, String associatedUsername) throws DataAccessException {
         ResultSet rs;
-        String sql = "SELECT * FROM Person WHERE PersonId = ?;";
+        String sql = "SELECT * FROM person WHERE personID = ? AND associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, personId);
+            stmt.setString(1, personID);
+            stmt.setString(2, associatedUsername);
             rs = stmt.executeQuery();
-            if (rs.next()) {
-                person = new Person(rs.getString("PersonId"),
-                        rs.getString("AssociatedUsername"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Gender"),
-                        rs.getString("FatherId"),
-                        rs.getString("MotherId"),
-                        rs.getString("SpouseId"));
-                return person;
-            }
-            else {
-                return null;
-            }
+
+            return getPersonFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -97,29 +78,13 @@ public class PersonDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public ArrayList<Person> findByUser(String associatedUsername) throws DataAccessException {
-        ArrayList<Person> persons = new ArrayList<>();
         ResultSet rs;
-        String sql = "SELECT * FROM Person WHERE AssociatedUsername = ?;";
+        String sql = "SELECT * FROM person WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, associatedUsername);
             rs = stmt.executeQuery();
-            while (rs.next()) {
-                persons.add(new Person(rs.getString("PersonId"),
-                        rs.getString("AssociatedUsername"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Gender"),
-                        rs.getString("FatherId"),
-                        rs.getString("MotherId"),
-                        rs.getString("SpouseId")));
-            }
 
-            if (persons.size() > 0) {
-                return persons;
-            }
-            else {
-                return null;
-            }
+            return getPersonsFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -134,28 +99,12 @@ public class PersonDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public ArrayList<Person> findAll() throws DataAccessException {
-        ArrayList<Person> persons = new ArrayList<>();
         ResultSet rs;
-        String sql = "SELECT * FROM Person;";
+        String sql = "SELECT * FROM person;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             rs = stmt.executeQuery();
-            while (rs.next()) {
-                persons.add(new Person(rs.getString("PersonId"),
-                        rs.getString("AssociatedUsername"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Gender"),
-                        rs.getString("FatherId"),
-                        rs.getString("MotherId"),
-                        rs.getString("SpouseId")));
-            }
 
-            if (persons.size() > 0) {
-                return persons;
-            }
-            else {
-                return null;
-            }
+            return getPersonsFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -169,7 +118,7 @@ public class PersonDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clear() throws DataAccessException {
-        String sql = "DELETE FROM Person;";
+        String sql = "DELETE FROM person;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
         }
@@ -186,7 +135,7 @@ public class PersonDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clearByUser(String associatedUsername) throws DataAccessException {
-        String sql = "DELETE FROM Person WHERE AssociatedUsername = ?;";
+        String sql = "DELETE FROM person WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, associatedUsername);
             stmt.executeUpdate();
@@ -194,6 +143,54 @@ public class PersonDao {
         catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while clearing events by user.");
+        }
+    }
+
+    private void addPersonDataToStatement(Person person, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, person.getPersonID());
+        stmt.setString(2, person.getAssociatedUsername());
+        stmt.setString(3, person.getFirstName());
+        stmt.setString(4, person.getLastName());
+        stmt.setString(5, person.getGender());
+        stmt.setString(6, person.getFatherID());
+        stmt.setString(7, person.getMotherID());
+        stmt.setString(8, person.getSpouseID());
+    }
+
+    private ArrayList<Person> getPersonsFromResultSet(ResultSet rs) throws SQLException {
+        ArrayList<Person> persons = new ArrayList<>();
+        while (rs.next()) {
+            persons.add(new Person(rs.getString("personId"),
+                    rs.getString("associatedUsername"),
+                    rs.getString("firstName"),
+                    rs.getString("lastName"),
+                    rs.getString("gender"),
+                    rs.getString("fatherID"),
+                    rs.getString("motherID"),
+                    rs.getString("spouseID")));
+        }
+
+        if (persons.size() > 0) {
+            return persons;
+        }
+        else {
+            return null;
+        }
+    }
+
+    private Person getPersonFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            return new Person(rs.getString("personId"),
+                    rs.getString("associatedUsername"),
+                    rs.getString("firstName"),
+                    rs.getString("lastName"),
+                    rs.getString("gender"),
+                    rs.getString("fatherID"),
+                    rs.getString("motherID"),
+                    rs.getString("spouseID"));
+        }
+        else {
+            return null;
         }
     }
 }

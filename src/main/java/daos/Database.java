@@ -5,7 +5,6 @@ import exceptions.DataAccessException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * The object for common database functions.

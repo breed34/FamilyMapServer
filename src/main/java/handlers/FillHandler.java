@@ -1,22 +1,18 @@
 package handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import request.FillRequest;
 import result.FillResult;
 import services.FillService;
-import utilities.Extensions;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
  * The handler object for filling the database with data
  * for a given user.
  */
-public class FillHandler implements HttpHandler {
+public class FillHandler extends HandlerBase {
     /**
      * Handles filling the database with data
      * for a given user.
@@ -33,18 +29,8 @@ public class FillHandler implements HttpHandler {
                 FillRequest request = getRequestFromPath(requestPath);
                 FillResult result = new FillService().fill(request);
 
-                if (result.isSuccess()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                }
-                else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                }
-
-                String resultJson = new Gson().toJson(result);
-                OutputStream responseBody = exchange.getResponseBody();
-                Extensions.writeString(resultJson, responseBody);
-
-                responseBody.close();
+                handleResult(exchange, result);
+                exchange.getResponseBody().close();
             }
             else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);

@@ -37,7 +37,7 @@ public class LoginServiceTest {
 
         assertTrue(result.isSuccess());
         assertNotNull(result.getAuthtoken());
-        assertNotNull(result.getPersonId());
+        assertNotNull(result.getPersonID());
         assertEquals(passRequest.getUsername(), result.getUsername());
     }
 

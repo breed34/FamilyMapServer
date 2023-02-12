@@ -10,13 +10,7 @@ public abstract class AuthRequiredRequestBase {
     private String activeUserName;
 
     /**
-     * Creates a request object for requests that require authentication without an active user's username.
-     */
-    public AuthRequiredRequestBase() {
-    }
-
-    /**
-     * Creates a request object for requests that require authentication with an active user's username.
+     * Creates a request object for requests that require authentication.
      *
      * @param activeUserName the username of the active user.
      */
@@ -35,9 +29,5 @@ public abstract class AuthRequiredRequestBase {
 
     public String getActiveUserName() {
         return activeUserName;
-    }
-
-    public void setActiveUserName(String activeUserName) {
-        this.activeUserName = activeUserName;
     }
 }

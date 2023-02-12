@@ -1,21 +1,23 @@
 package request;
 
 /**
- * The request object for getting a person by their personId.
+ * The request object for getting a person by their personID.
  */
 public class PersonRequest extends AuthRequiredRequestBase {
     /**
-     * The personId of the person to get from the database.
+     * The personID of the person to get from the database.
      */
-    private String personId;
+    private String personID;
 
     /**
-     * Creates a request object for getting a person by their personId.
+     * Creates a request object for getting a person by their personID.
      *
-     * @param personId the personId of the person to get from the database.
+     * @param activeUserName the username of the active user.
+     * @param personID the personID of the person to get from the database.
      */
-    public PersonRequest(String personId) {
-        this.personId = personId;
+    public PersonRequest(String personID, String activeUserName) {
+        super(activeUserName);
+        this.personID = personID;
     }
 
     /**
@@ -24,10 +26,10 @@ public class PersonRequest extends AuthRequiredRequestBase {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return super.isValid() && personId != null && !personId.isBlank();
+        return super.isValid() && personID != null && !personID.isBlank();
     }
 
-    public String getPersonId() {
-        return personId;
+    public String getPersonID() {
+        return personID;
     }
 }

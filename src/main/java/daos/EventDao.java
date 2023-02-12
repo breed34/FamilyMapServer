@@ -34,19 +34,10 @@ public class EventDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void insert(Event event) throws DataAccessException {
-        String sql = "INSERT INTO Event (EventId, AssociatedUsername, PersonId, Latitude, Longitude, " +
-                "Country, City, EventType, Year) VALUES(?,?,?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO event (eventID, associatedUsername, personID, latitude, longitude, " +
+                "country, city, eventType, year) VALUES(?,?,?,?,?,?,?,?,?);";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, event.getEventId());
-            stmt.setString(2, event.getAssociatedUsername());
-            stmt.setString(3, event.getPersonId());
-            stmt.setFloat(4, event.getLatitude());
-            stmt.setFloat(5, event.getLongitude());
-            stmt.setString(6, event.getCountry());
-            stmt.setString(7, event.getCity());
-            stmt.setString(8, event.getEventType());
-            stmt.setInt(9, event.getYear());
-
+            addEventDataToStatement(event, stmt);
             stmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -56,34 +47,22 @@ public class EventDao {
     }
 
     /**
-     * Finds an event by its eventId.
+     * Finds an event by its eventID and the username of the active user.
      *
-     * @param eventId the eventId of the desired event.
+     * @param eventID the eventID of the desired event.
+     * @param associatedUsername the username of the active user.
      * @return the desired event or null if none is found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public Event find(String eventId) throws DataAccessException {
-        Event event;
+    public Event find(String eventID, String associatedUsername) throws DataAccessException {
         ResultSet rs;
-        String sql = "SELECT * FROM Event WHERE EventId = ?;";
+        String sql = "SELECT * FROM event WHERE eventID = ? AND associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, eventId);
+            stmt.setString(1, eventID);
+            stmt.setString(2, associatedUsername);
             rs = stmt.executeQuery();
-            if (rs.next()) {
-                event = new Event(rs.getString("EventId"),
-                        rs.getString("AssociatedUsername"),
-                        rs.getString("PersonId"),
-                        rs.getFloat("Latitude"),
-                        rs.getFloat("Longitude"),
-                        rs.getString("Country"),
-                        rs.getString("City"),
-                        rs.getString("EventType"),
-                        rs.getInt("Year"));
-                return event;
-            }
-            else {
-                return null;
-            }
+
+            return getEventFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -99,30 +78,13 @@ public class EventDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public ArrayList<Event> findByUser(String associatedUsername) throws DataAccessException {
-        ArrayList<Event> events = new ArrayList<>();
         ResultSet rs;
-        String sql = "SELECT * FROM Event WHERE AssociatedUsername = ?;";
+        String sql = "SELECT * FROM event WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, associatedUsername);
             rs = stmt.executeQuery();
-            while (rs.next()) {
-                events.add(new Event(rs.getString("EventId"),
-                        rs.getString("AssociatedUsername"),
-                        rs.getString("PersonId"),
-                        rs.getFloat("Latitude"),
-                        rs.getFloat("Longitude"),
-                        rs.getString("Country"),
-                        rs.getString("City"),
-                        rs.getString("EventType"),
-                        rs.getInt("Year")));
-            }
 
-            if (events.size() > 0) {
-                return events;
-            }
-            else {
-                return null;
-            }
+            return getEventsFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -137,29 +99,12 @@ public class EventDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public ArrayList<Event> findAll() throws DataAccessException {
-        ArrayList<Event> events = new ArrayList<>();
         ResultSet rs;
-        String sql = "SELECT * FROM Event";
+        String sql = "SELECT * FROM event";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             rs = stmt.executeQuery();
-            while (rs.next()) {
-                events.add(new Event(rs.getString("EventId"),
-                        rs.getString("AssociatedUsername"),
-                        rs.getString("PersonId"),
-                        rs.getFloat("Latitude"),
-                        rs.getFloat("Longitude"),
-                        rs.getString("Country"),
-                        rs.getString("City"),
-                        rs.getString("EventType"),
-                        rs.getInt("Year")));
-            }
 
-            if (events.size() > 0) {
-                return events;
-            }
-            else {
-                return null;
-            }
+            return getEventsFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -173,7 +118,7 @@ public class EventDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clear() throws DataAccessException {
-        String sql = "DELETE FROM Event;";
+        String sql = "DELETE FROM event;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
         }
@@ -190,7 +135,7 @@ public class EventDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clearByUser(String associatedUsername) throws DataAccessException {
-        String sql = "DELETE FROM Event WHERE AssociatedUsername = ?;";
+        String sql = "DELETE FROM event WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, associatedUsername);
             stmt.executeUpdate();
@@ -198,6 +143,57 @@ public class EventDao {
         catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while clearing events by user.");
+        }
+    }
+
+    private void addEventDataToStatement(Event event, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, event.getEventID());
+        stmt.setString(2, event.getAssociatedUsername());
+        stmt.setString(3, event.getPersonID());
+        stmt.setFloat(4, event.getLatitude());
+        stmt.setFloat(5, event.getLongitude());
+        stmt.setString(6, event.getCountry());
+        stmt.setString(7, event.getCity());
+        stmt.setString(8, event.getEventType());
+        stmt.setInt(9, event.getYear());
+    }
+
+    private Event getEventFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            return new Event(rs.getString("eventID"),
+                    rs.getString("associatedUsername"),
+                    rs.getString("personID"),
+                    rs.getFloat("latitude"),
+                    rs.getFloat("longitude"),
+                    rs.getString("country"),
+                    rs.getString("city"),
+                    rs.getString("eventType"),
+                    rs.getInt("year"));
+        }
+        else {
+            return null;
+        }
+    }
+
+    private ArrayList<Event> getEventsFromResultSet(ResultSet rs) throws SQLException {
+        ArrayList<Event> events = new ArrayList<>();
+        while (rs.next()) {
+            events.add(new Event(rs.getString("eventID"),
+                    rs.getString("associatedUsername"),
+                    rs.getString("personID"),
+                    rs.getFloat("latitude"),
+                    rs.getFloat("longitude"),
+                    rs.getString("country"),
+                    rs.getString("city"),
+                    rs.getString("eventType"),
+                    rs.getInt("year")));
+        }
+
+        if (events.size() > 0) {
+            return events;
+        }
+        else {
+            return null;
         }
     }
 }

@@ -3,7 +3,7 @@ package result;
 import models.Person;
 
 /**
- * The result object for getting a person by their personId.
+ * The result object for getting a person by their personID.
  */
 public class PersonResult extends ResultBase {
     /**
@@ -14,7 +14,7 @@ public class PersonResult extends ResultBase {
     /**
      * A unique identifier for the person.
      */
-    private String personId;
+    private String personID;
 
     /**
      * The person's first name.
@@ -32,39 +32,39 @@ public class PersonResult extends ResultBase {
     private String gender;
 
     /**
-     * The personId of the person's father.
+     * The personID of the person's father.
      */
-    private String fatherId;
+    private String fatherID;
 
     /**
-     * The personId of the person's mother.
+     * The personID of the person's mother.
      */
-    private String motherId;
+    private String motherID;
 
     /**
-     * The personId of the person's spouse.
+     * The personID of the person's spouse.
      */
-    private String spouseId;
+    private String spouseID;
 
     /**
-     * Creates a successful result object for getting a person by their personId.
+     * Creates a successful result object for getting a person by their personID.
      *
      * @param person the person retrieved from the database.
      */
     public PersonResult(Person person) {
         super();
         this.associatedUsername = person.getAssociatedUsername();
-        this.personId = person.getPersonId();
+        this.personID = person.getPersonID();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
         this.gender = person.getGender();
-        this.fatherId = person.getFatherId();
-        this.motherId = person.getMotherId();
-        this.spouseId = person.getSpouseId();
+        this.fatherID = person.getFatherID();
+        this.motherID = person.getMotherID();
+        this.spouseID = person.getSpouseID();
     }
 
     /**
-     * Creates an unsuccessful result object for getting a person by their personId.
+     * Creates an unsuccessful result object for getting a person by their personID.
      *
      * @param message an error message describing what went wrong.
      */
@@ -76,8 +76,8 @@ public class PersonResult extends ResultBase {
         return associatedUsername;
     }
 
-    public String getPersonId() {
-        return personId;
+    public String getPersonID() {
+        return personID;
     }
 
     public String getFirstName() {
@@ -92,15 +92,15 @@ public class PersonResult extends ResultBase {
         return gender;
     }
 
-    public String getFatherId() {
-        return fatherId;
+    public String getFatherID() {
+        return fatherID;
     }
 
-    public String getMotherId() {
-        return motherId;
+    public String getMotherID() {
+        return motherID;
     }
 
-    public String getSpouseId() {
-        return spouseId;
+    public String getSpouseID() {
+        return spouseID;
     }
 }

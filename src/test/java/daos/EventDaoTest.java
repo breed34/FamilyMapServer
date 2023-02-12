@@ -40,7 +40,7 @@ public class EventDaoTest {
     @Test
     public void insertPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
-        Event compareTest = eventDao.find(sampleEvent1.getEventId());
+        Event compareTest = eventDao.find(sampleEvent1.getEventID(), sampleEvent1.getAssociatedUsername());
         assertNotNull(compareTest);
         assertEquals(sampleEvent1, compareTest);
     }
@@ -55,16 +55,24 @@ public class EventDaoTest {
     public void findPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        Event compareTest = eventDao.find(sampleEvent2.getEventId());
+        Event compareTest = eventDao.find(sampleEvent2.getEventID(), sampleEvent2.getAssociatedUsername());
         assertNotNull(compareTest);
         assertEquals(sampleEvent2, compareTest);
     }
 
     @Test
-    public void findFail() throws DataAccessException {
+    public void findFailNoSuchEvent() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        Event compareTest = eventDao.find("DOES_NOT_EXIST");
+        Event compareTest = eventDao.find("DOES_NOT_EXIST", sampleEvent1.getAssociatedUsername());
+        assertNull(compareTest);
+    }
+
+    @Test
+    public void findFailWrongUser() throws DataAccessException {
+        eventDao.insert(sampleEvent1);
+        eventDao.insert(sampleEvent2);
+        Event compareTest = eventDao.find(sampleEvent1.getEventID(), "SomeUser");
         assertNull(compareTest);
     }
 
@@ -117,14 +125,14 @@ public class EventDaoTest {
     public void clearWithDataPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        Event shouldFind1 = eventDao.find(sampleEvent1.getEventId());
-        Event shouldFind2 = eventDao.find(sampleEvent2.getEventId());
+        Event shouldFind1 = eventDao.find(sampleEvent1.getEventID(), sampleEvent1.getAssociatedUsername());
+        Event shouldFind2 = eventDao.find(sampleEvent2.getEventID(), sampleEvent2.getAssociatedUsername());
         assertNotNull(shouldFind1);
         assertNotNull(shouldFind2);
 
         eventDao.clear();
-        Event shouldNotFind1 = eventDao.find(sampleEvent1.getEventId());
-        Event shouldNotFind2 = eventDao.find(sampleEvent2.getEventId());
+        Event shouldNotFind1 = eventDao.find(sampleEvent1.getEventID(), sampleEvent1.getAssociatedUsername());
+        Event shouldNotFind2 = eventDao.find(sampleEvent2.getEventID(), sampleEvent2.getAssociatedUsername());
         assertNull(shouldNotFind1);
         assertNull(shouldNotFind2);
     }

@@ -2,23 +2,18 @@ package handlers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import request.LoadRequest;
-import result.ClearResult;
 import result.LoadResult;
-import services.ClearService;
 import services.LoadService;
-import utilities.Extensions;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
  * The handler object for loading data directly into the database.
  */
-public class LoadHandler implements HttpHandler {
+public class LoadHandler extends HandlerBase {
     /**
      * Handles loading data directly into the database.
      *
@@ -31,23 +26,13 @@ public class LoadHandler implements HttpHandler {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
                 InputStream requestBody = exchange.getRequestBody();
-                String requestJson = Extensions.readString(requestBody);
+                String requestJson = readString(requestBody);
 
                 LoadRequest request = new Gson().fromJson(requestJson, LoadRequest.class);
                 LoadResult result = new LoadService().load(request);
 
-                if (result.isSuccess()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                }
-                else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                }
-
-                String resultJson = new Gson().toJson(result);
-                OutputStream responseBody = exchange.getResponseBody();
-                Extensions.writeString(resultJson, responseBody);
-
-                responseBody.close();
+                handleResult(exchange, result);
+                exchange.getResponseBody().close();
             }
             else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);

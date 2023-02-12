@@ -1,7 +1,6 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +11,7 @@ import java.nio.file.Files;
 /**
  * The handler object for serving web files.
  */
-public class FileHandler implements HttpHandler {
+public class FileHandler extends HandlerBase {
 
     /**
      * Handles serving up the requested file.
@@ -23,38 +22,23 @@ public class FileHandler implements HttpHandler {
      */
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        boolean isGet = false;
-        boolean fileFound = false;
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
-                isGet = true;
+                String requestPath = exchange.getRequestURI().toString();
+                File requestedFile = getRequestedFileFromPath(requestPath);
 
-                String urlPath = exchange.getRequestURI().toString();
-                if (urlPath.equals("/")) {
-                    urlPath += "index.html";
-                }
-
-                File requestedFile = new File("web" + urlPath);
                 if (requestedFile.exists()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                    OutputStream responseBody = exchange.getResponseBody();
-                    Files.copy(requestedFile.toPath(), responseBody);
-                    responseBody.close();
-                    fileFound = true;
+                    handleFileFound(exchange, requestedFile);
+                    exchange.getResponseBody().close();
+                }
+                else  {
+                    handleFileNotFound(exchange);
+                    exchange.getResponseBody().close();
                 }
             }
-
-            if (!isGet) {
+            else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
                 exchange.getResponseBody().close();
-            }
-
-            if (!fileFound) {
-                File notFound = new File("web/HTML/404.html");
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
-                OutputStream responseBody = exchange.getResponseBody();
-                Files.copy(notFound.toPath(), responseBody);
-                responseBody.close();
             }
         }
         catch (IOException ex) {
@@ -62,5 +46,26 @@ public class FileHandler implements HttpHandler {
             exchange.getResponseBody().close();
             ex.printStackTrace();
         }
+    }
+
+    private void handleFileFound(HttpExchange exchange, File requestedFile) throws IOException {
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+        OutputStream responseBody = exchange.getResponseBody();
+        Files.copy(requestedFile.toPath(), responseBody);
+    }
+
+    private void handleFileNotFound(HttpExchange exchange) throws IOException {
+        File notFound = new File("web/HTML/404.html");
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+        OutputStream responseBody = exchange.getResponseBody();
+        Files.copy(notFound.toPath(), responseBody);
+    }
+
+    private File getRequestedFileFromPath(String requestPath) {
+        if (requestPath.equals("/")) {
+            requestPath += "index.html";
+        }
+
+        return new File("web" + requestPath);
     }
 }

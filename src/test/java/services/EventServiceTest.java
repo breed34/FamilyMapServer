@@ -21,13 +21,9 @@ public class EventServiceTest {
     @BeforeEach
     public void setUp() throws DataAccessException {
         eventService = new EventService();
-        passRequest = new EventRequest("Skiing_456A");
-        failRequestWrongUser = new EventRequest("Skiing_456A");
-        failRequestNoSuchEvent = new EventRequest("SomeOtherEvent");
-
-        passRequest.setActiveUserName("Gale");
-        failRequestWrongUser.setActiveUserName("Bob");
-        failRequestNoSuchEvent.setActiveUserName("Gale");
+        passRequest = new EventRequest("Skiing_456A", "Gale");
+        failRequestWrongUser = new EventRequest("Skiing_456A", "Bob");
+        failRequestNoSuchEvent = new EventRequest("SomeOtherEvent", "Gale");
 
         addEvent();
     }
@@ -44,7 +40,7 @@ public class EventServiceTest {
                 "Skiing_Downhill", 2023);
 
         EventResult result = eventService.getEvent(passRequest);
-        Event actual = extractEventFromResult(result);
+        Event actual = createEventFromResult(result);
 
         assertTrue(result.isSuccess());
         assertEquals(expected, actual);
@@ -85,10 +81,10 @@ public class EventServiceTest {
         db.closeConnection(true);
     }
 
-    private Event extractEventFromResult(EventResult result) {
-        return new Event(result.getEventId(),
+    private Event createEventFromResult(EventResult result) {
+        return new Event(result.getEventID(),
                 result.getAssociatedUsername(),
-                result.getPersonId(),
+                result.getPersonID(),
                 result.getLatitude(),
                 result.getLongitude(),
                 result.getCountry(),

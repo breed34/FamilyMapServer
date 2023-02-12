@@ -33,7 +33,9 @@ public class AuthenticationService {
         try {
             db.openConnection();
 
-            Authtoken authtoken = new AuthtokenDao(db.getConnection()).findByToken(request.getAuthtoken());
+            Authtoken authtoken = new AuthtokenDao(db.getConnection()).find(request.getAuthtoken());
+
+            // Handle if no authtoken could be found
             if (authtoken == null) {
                 logger.info("Error: The provided authtoken was invalid.");
                 db.closeConnection(false);

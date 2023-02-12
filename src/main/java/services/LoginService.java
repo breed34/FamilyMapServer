@@ -36,13 +36,17 @@ public class LoginService {
         try {
             db.openConnection();
 
+
             User user = new UserDao(db.getConnection()).find(request.getUsername());
+
+            // Handle if user does not exist or password does not match user found in database
             if (user == null || !request.getPassword().equals(user.getPassword())) {
                 logger.info("Error: The username or password for the user was incorrect.");
                 db.closeConnection(false);
                 return new LoginResult("Error: The username or password for the user was incorrect.");
             }
 
+            // Add a new authtoken for the user
             String tokenString = UUID.randomUUID().toString();
             Authtoken authtoken = new Authtoken(tokenString, request.getUsername());
             new AuthtokenDao(db.getConnection()).insert(authtoken);

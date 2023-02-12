@@ -38,6 +38,8 @@ public class FillService {
             db.openConnection();
 
             User user = new UserDao(db.getConnection()).find(request.getUsername());
+
+            // Handle if user does not exist
             if (user == null) {
                 String message = String.format("User with username \"%s\" does not exist.", request.getUsername());
                 logger.info(message);
@@ -45,14 +47,17 @@ public class FillService {
                 return new FillResult("Error: No user with that username could be found.", false);
             }
 
-            Person person = new PersonDao(db.getConnection()).find(user.getPersonId());
+            // Clear all persons and events related to the given user
+            Person person = new PersonDao(db.getConnection()).find(user.getPersonID(), request.getUsername());
             new PersonDao(db.getConnection()).clearByUser(user.getUsername());
             new EventDao(db.getConnection()).clearByUser(user.getUsername());
 
+            // Generate all related family data for the given user
             int birthYear = FamilyGenerator.generateUserBirthYear();
             FamilyGenerator.generateGenerations(db.getConnection(), person, request.getUsername(),
                     birthYear, request.getGenerations());
 
+            // Check how many persons and events were added to the database
             int numberOfPersons = new PersonDao(db.getConnection()).findByUser(user.getUsername()).size();
             int numberOfEvents = new EventDao(db.getConnection()).findByUser(user.getUsername()).size();
 

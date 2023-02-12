@@ -3,7 +3,7 @@ package result;
 import models.Event;
 
 /**
- * The result object for getting an event by its eventId.
+ * The result object for getting an event by its eventID.
  */
 public class EventResult extends ResultBase {
     /**
@@ -14,12 +14,12 @@ public class EventResult extends ResultBase {
     /**
      * A unique identifier for the event.
      */
-    private String eventId;
+    private String eventID;
 
     /**
-     * The personId of the person for whom this event occurred.
+     * The personID of the person for whom this event occurred.
      */
-    private String personId;
+    private String personID;
 
     /**
      * The latitude of the event's location.
@@ -52,15 +52,15 @@ public class EventResult extends ResultBase {
     private int year;
 
     /**
-     * Creates a successful result object for getting an event by its eventId.
+     * Creates a successful result object for getting an event by its eventID.
      *
      * @param event the event retrieved from the database.
      */
     public EventResult(Event event) {
         super();
         this.associatedUsername = event.getAssociatedUsername();
-        this.eventId = event.getEventId();
-        this.personId = event.getPersonId();
+        this.eventID = event.getEventID();
+        this.personID = event.getPersonID();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.country = event.getCountry();
@@ -70,7 +70,7 @@ public class EventResult extends ResultBase {
     }
 
     /**
-     * Creates an unsuccessful result object for getting an event by its eventId.
+     * Creates an unsuccessful result object for getting an event by its eventID.
      *
      * @param message an error message describing what went wrong.
      */
@@ -82,12 +82,12 @@ public class EventResult extends ResultBase {
         return associatedUsername;
     }
 
-    public String getEventId() {
-        return eventId;
+    public String getEventID() {
+        return eventID;
     }
 
-    public String getPersonId() {
-        return personId;
+    public String getPersonID() {
+        return personID;
     }
 
     public float getLatitude() {

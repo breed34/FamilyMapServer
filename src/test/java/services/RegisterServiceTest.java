@@ -32,7 +32,7 @@ public class RegisterServiceTest {
 
         assertTrue(result.isSuccess());
         assertNotNull(result.getAuthtoken());
-        assertNotNull(result.getPersonId());
+        assertNotNull(result.getPersonID());
         assertEquals("Bob123", result.getUsername());
     }
 

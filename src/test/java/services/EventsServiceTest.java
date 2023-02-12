@@ -51,7 +51,7 @@ public class EventsServiceTest {
     }
 
     @Test
-    void getAllEventsFailNoSuchEvent() {
+    void getAllEventsFail() {
         EventsResult result = eventsService.getAllEvents(failRequest);
 
         assertFalse(result.isSuccess());

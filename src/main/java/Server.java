@@ -12,6 +12,7 @@ public class Server {
 	private void run(String portNumber) {
 		logger.info(String.format("Initializing HTTP Server on port %s", portNumber));
 
+		// Setup server
 		HttpServer server;
 		try {
 			server = HttpServer.create(
@@ -22,10 +23,9 @@ public class Server {
 			e.printStackTrace();
 			return;
 		}
-
 		server.setExecutor(null);
 
-		logger.info("Creating contexts");
+		logger.info("Registering handlers");
 		server.createContext("/event", new EventsHandler());
 		server.createContext("/event/", new EventHandler());
 		server.createContext("/person", new PersonsHandler());

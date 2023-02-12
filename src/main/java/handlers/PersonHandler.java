@@ -1,29 +1,24 @@
 package handlers;
 
-import com.google.gson.Gson;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import request.AuthenticationRequest;
 import request.PersonRequest;
 import result.AuthenticationResult;
 import result.PersonResult;
 import services.AuthenticationService;
 import services.PersonService;
-import utilities.Extensions;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
  * The handler object for getting a person in the database
- * by their personId.
+ * by their personID.
  */
-public class PersonHandler implements HttpHandler {
+public class PersonHandler extends HandlerBase {
     /**
      * Handles getting a person in the database
-     * by their personId.
+     * by their personID.
      *
      * @param exchange the exchange containing the request from the
      *                 client and used to send the response
@@ -33,43 +28,23 @@ public class PersonHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
-                Headers headers = exchange.getRequestHeaders();
-                if (headers.containsKey("Authorization")) {
-                    String authtoken = headers.getFirst("Authorization");
-                    AuthenticationRequest authRequest = new AuthenticationRequest(authtoken);
-                    AuthenticationResult authResult = new AuthenticationService().authenticate(authRequest);
+                // Authenticate the user
+                String authtoken = getAuthtokenFromHeader(exchange);
+                AuthenticationRequest authRequest = new AuthenticationRequest(authtoken);
+                AuthenticationResult authResult = new AuthenticationService().authenticate(authRequest);
 
-                    if (authResult.isSuccess()) {
-                        String requestPath = exchange.getRequestURI().toString();
-                        PersonRequest request = getRequestFromPath(requestPath);
-                        if (request != null) {
-                            request.setActiveUserName(authResult.getUsername());
-                        }
+                if (authResult.isSuccess()) {
+                    String requestPath = exchange.getRequestURI().toString();
+                    PersonRequest request = getRequestFromPath(requestPath, authResult.getUsername());
+                    PersonResult result = new PersonService().getPerson(request);
 
-                        PersonResult result = new PersonService().getPerson(request);
-
-                        if (result.isSuccess()) {
-                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                        }
-                        else {
-                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                        }
-
-                        String resultJson = new Gson().toJson(result);
-                        OutputStream responseBody = exchange.getResponseBody();
-                        Extensions.writeString(resultJson, responseBody);
-
-                        responseBody.close();
-                    }
-                    else {
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
-
-                        String resultJson = new Gson().toJson(authResult);
-                        OutputStream responseBody = exchange.getResponseBody();
-                        Extensions.writeString(resultJson, responseBody);
-
-                        responseBody.close();
-                    }
+                    handleResult(exchange, result);
+                    exchange.getResponseBody().close();
+                }
+                else {
+                    // Handle failed user authentication
+                    handleResult(exchange, authResult);
+                    exchange.getResponseBody().close();
                 }
             }
             else {
@@ -84,10 +59,10 @@ public class PersonHandler implements HttpHandler {
         }
     }
 
-    private PersonRequest getRequestFromPath(String path) {
+    private PersonRequest getRequestFromPath(String path, String activeUserName) {
         String[] pathParameters = path.split("/");
         if (pathParameters.length == 3) {
-            return new PersonRequest(pathParameters[2]);
+            return new PersonRequest(pathParameters[2], activeUserName);
         }
 
         return null;

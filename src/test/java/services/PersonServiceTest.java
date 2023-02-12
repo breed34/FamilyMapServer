@@ -21,13 +21,9 @@ public class PersonServiceTest {
     @BeforeEach
     public void setUp() throws DataAccessException {
         personService = new PersonService();
-        passRequest = new PersonRequest("Bob123");
-        failRequestWrongUser = new PersonRequest("Bob123");
-        failRequestNoSuchPerson = new PersonRequest("SomeOtherPerson");
-
-        passRequest.setActiveUserName("Gale");
-        failRequestWrongUser.setActiveUserName("Bob");
-        failRequestNoSuchPerson.setActiveUserName("Gale");
+        passRequest = new PersonRequest("Bob123", "Gale");
+        failRequestWrongUser = new PersonRequest("Bob123", "Bob");
+        failRequestNoSuchPerson = new PersonRequest("SomeOtherPerson", "Gale");
 
         addPerson();
     }
@@ -43,7 +39,7 @@ public class PersonServiceTest {
                 "Henderson", "m");
 
         PersonResult result = personService.getPerson(passRequest);
-        Person actual = extractPersonFromResult(result);
+        Person actual = createPersonFromResult(result);
 
         assertTrue(result.isSuccess());
         assertEquals(expected, actual);
@@ -83,14 +79,14 @@ public class PersonServiceTest {
         db.closeConnection(true);
     }
 
-    private Person extractPersonFromResult(PersonResult result) {
-        return new Person(result.getPersonId(),
+    private Person createPersonFromResult(PersonResult result) {
+        return new Person(result.getPersonID(),
                 result.getAssociatedUsername(),
                 result.getFirstName(),
                 result.getLastName(),
                 result.getGender(),
-                result.getFatherId(),
-                result.getMotherId(),
-                result.getSpouseId());
+                result.getFatherID(),
+                result.getMotherID(),
+                result.getSpouseID());
     }
 }

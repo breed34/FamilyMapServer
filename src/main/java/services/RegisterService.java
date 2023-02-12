@@ -29,6 +29,7 @@ public class RegisterService {
      * @return the result of the call to register a new user.
      */
     public RegisterResult register(RegisterRequest request) {
+        // Validate request object
         if (!request.isValid()) {
             logger.info("Error: Invalid register request object.");
             return new RegisterResult("Error: Invalid request.");
@@ -38,6 +39,7 @@ public class RegisterService {
         try {
             db.openConnection();
 
+            // Handle if user already exists
             if (new UserDao(db.getConnection()).find(request.getUsername()) != null) {
                 String message = String.format("User with username \"%s\" already exists.", request.getUsername());
                 logger.info(message);
@@ -45,15 +47,18 @@ public class RegisterService {
                 return new RegisterResult("Error: A user with that username already exists.");
             }
 
-            String userPersonId = UUID.randomUUID().toString();
-            User user = extractUser(request, userPersonId);
+            // Create and insert the new user
+            String userPersonID = UUID.randomUUID().toString();
+            User user = createUserFromRequest(request, userPersonID);
             new UserDao(db.getConnection()).insert(user);
 
-            Person person = extractPerson(request, userPersonId);
+            // Create the person representing the new user and generate all related family data
+            Person person = createPersonFromRequest(request, userPersonID);
             int birthYear = FamilyGenerator.generateUserBirthYear();
             FamilyGenerator.generateGenerations(db.getConnection(), person, request.getUsername(),
                     birthYear, 4);
 
+            // Add an authtoken for the new user
             String tokenString = UUID.randomUUID().toString();
             Authtoken authtoken = new Authtoken(tokenString, request.getUsername());
             new AuthtokenDao(db.getConnection()).insert(authtoken);
@@ -68,18 +73,18 @@ public class RegisterService {
         }
     }
 
-    private User extractUser(RegisterRequest request, String userPersonId) {
+    private User createUserFromRequest(RegisterRequest request, String userPersonID) {
         return new User(request.getUsername(),
                 request.getPassword(),
                 request.getEmail(),
                 request.getFirstName(),
                 request.getLastName(),
                 request.getGender(),
-                userPersonId);
+                userPersonID);
     }
 
-    private Person extractPerson(RegisterRequest request, String userPersonId) {
-        return new Person(userPersonId,
+    private Person createPersonFromRequest(RegisterRequest request, String userPersonID) {
+        return new Person(userPersonID,
                 request.getUsername(),
                 request.getFirstName(),
                 request.getLastName(),

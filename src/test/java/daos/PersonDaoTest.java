@@ -38,7 +38,7 @@ public class PersonDaoTest {
     @Test
     public void insertPass() throws DataAccessException {
         personDao.insert(samplePerson1);
-        Person compareTest = personDao.find(samplePerson1.getPersonId());
+        Person compareTest = personDao.find(samplePerson1.getPersonID(), samplePerson1.getAssociatedUsername());
         assertNotNull(compareTest);
         assertEquals(samplePerson1, compareTest);
     }
@@ -53,16 +53,24 @@ public class PersonDaoTest {
     public void findPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        Person compareTest = personDao.find(samplePerson2.getPersonId());
+        Person compareTest = personDao.find(samplePerson2.getPersonID(), samplePerson2.getAssociatedUsername());
         assertNotNull(compareTest);
         assertEquals(samplePerson2, compareTest);
     }
 
     @Test
-    public void findFail() throws DataAccessException {
+    public void findFailNoSuchUser() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        Person compareTest = personDao.find("DOES_NOT_EXIST");
+        Person compareTest = personDao.find("DOES_NOT_EXIST", samplePerson1.getAssociatedUsername());
+        assertNull(compareTest);
+    }
+
+    @Test
+    public void findFailWrongUser() throws DataAccessException {
+        personDao.insert(samplePerson1);
+        personDao.insert(samplePerson2);
+        Person compareTest = personDao.find(samplePerson1.getPersonID(), "SomeUser");
         assertNull(compareTest);
     }
 
@@ -115,14 +123,14 @@ public class PersonDaoTest {
     public void clearWithDataPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        Person shouldFind1 = personDao.find(samplePerson1.getPersonId());
-        Person shouldFind2 = personDao.find(samplePerson2.getPersonId());
+        Person shouldFind1 = personDao.find(samplePerson1.getPersonID(), samplePerson1.getAssociatedUsername());
+        Person shouldFind2 = personDao.find(samplePerson2.getPersonID(), samplePerson2.getAssociatedUsername());
         assertNotNull(shouldFind1);
         assertNotNull(shouldFind2);
 
         personDao.clear();
-        Person shouldNotFind1 = personDao.find(samplePerson1.getPersonId());
-        Person shouldNotFind2 = personDao.find(samplePerson2.getPersonId());
+        Person shouldNotFind1 = personDao.find(samplePerson1.getPersonID(), samplePerson1.getAssociatedUsername());
+        Person shouldNotFind2 = personDao.find(samplePerson2.getPersonID(),samplePerson2.getAssociatedUsername());
         assertNull(shouldNotFind1);
         assertNull(shouldNotFind2);
     }

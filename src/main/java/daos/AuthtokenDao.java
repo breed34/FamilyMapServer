@@ -33,7 +33,7 @@ public class AuthtokenDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void insert(Authtoken authtoken) throws DataAccessException {
-        String sql = "INSERT INTO Authtoken (Authtoken, Username) VALUES(?,?);";
+        String sql = "INSERT INTO authtoken (authtoken, username) VALUES(?,?);";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, authtoken.getAuthtoken());
             stmt.setString(2, authtoken.getUsername());
@@ -53,54 +53,18 @@ public class AuthtokenDao {
      * @return the desired authtoken object.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public Authtoken findByToken(String authtoken) throws DataAccessException {
-        Authtoken token;
+    public Authtoken find(String authtoken) throws DataAccessException {
         ResultSet rs;
-        String sql = "SELECT * FROM Authtoken WHERE Authtoken = ?;";
+        String sql = "SELECT * FROM authtoken WHERE authtoken = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, authtoken);
             rs = stmt.executeQuery();
-            if (rs.next()) {
-                token = new Authtoken(rs.getString("Authtoken"),
-                        rs.getString("Username"));
-                return token;
-            }
-            else {
-                return null;
-            }
+
+            return getAuthtokenFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while finding an authtoken by token in the database");
-        }
-    }
-
-    /**
-     * Finds an authtoken object by its associated username.
-     *
-     * @param username the username associated with the desired authtoken object.
-     * @return the desired authtoken object.
-     * @throws DataAccessException if an error happens during the database transaction.
-     */
-    public Authtoken findByUser(String username) throws DataAccessException {
-        Authtoken token;
-        ResultSet rs;
-        String sql = "SELECT * FROM Authtoken WHERE Username = ?;";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
-                token = new Authtoken(rs.getString("Authtoken"),
-                        rs.getString("Username"));
-                return token;
-            }
-            else {
-                return null;
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            throw new DataAccessException("Error encountered while finding an authtoken by username in the database");
         }
     }
 
@@ -110,7 +74,7 @@ public class AuthtokenDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clear() throws DataAccessException {
-        String sql = "DELETE FROM Authtoken;";
+        String sql = "DELETE FROM authtoken;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
         }
@@ -127,7 +91,7 @@ public class AuthtokenDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clearByUser(String username) throws DataAccessException {
-        String sql = "DELETE FROM Authtoken WHERE Username = ?;";
+        String sql = "DELETE FROM authtoken WHERE username = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.executeUpdate();
@@ -135,6 +99,16 @@ public class AuthtokenDao {
         catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while clearing authtokens by user.");
+        }
+    }
+
+    private Authtoken getAuthtokenFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            return new Authtoken(rs.getString("authtoken"),
+                    rs.getString("username"));
+        }
+        else {
+            return null;
         }
     }
 }

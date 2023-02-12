@@ -1,29 +1,24 @@
 package handlers;
 
-import com.google.gson.Gson;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import request.AuthenticationRequest;
 import request.EventRequest;
 import result.AuthenticationResult;
 import result.EventResult;
 import services.AuthenticationService;
 import services.EventService;
-import utilities.Extensions;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
  * The handler object for getting an event in the database
- * by its eventId.
+ * by its eventID.
  */
-public class EventHandler implements HttpHandler {
+public class EventHandler extends HandlerBase {
     /**
      * Handles getting an event in the database
-     * by its eventId.
+     * by its eventID.
      *
      * @param exchange the exchange containing the request from the
      *                 client and used to send the response
@@ -33,43 +28,23 @@ public class EventHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("get")) {
-                Headers headers = exchange.getRequestHeaders();
-                if (headers.containsKey("Authorization")) {
-                    String authtoken = headers.getFirst("Authorization");
-                    AuthenticationRequest authRequest = new AuthenticationRequest(authtoken);
-                    AuthenticationResult authResult = new AuthenticationService().authenticate(authRequest);
+                // Authenticate the user
+                String authtoken = getAuthtokenFromHeader(exchange);
+                AuthenticationRequest authRequest = new AuthenticationRequest(authtoken);
+                AuthenticationResult authResult = new AuthenticationService().authenticate(authRequest);
 
-                    if (authResult.isSuccess()) {
-                        String requestPath = exchange.getRequestURI().toString();
-                        EventRequest request = getRequestFromPath(requestPath);
-                        if (request != null) {
-                            request.setActiveUserName(authResult.getUsername());
-                        }
+                if (authResult.isSuccess()) {
+                    String requestPath = exchange.getRequestURI().toString();
+                    EventRequest request = getRequestFromPath(requestPath, authResult.getUsername());
+                    EventResult result = new EventService().getEvent(request);
 
-                        EventResult result = new EventService().getEvent(request);
-
-                        if (result.isSuccess()) {
-                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                        }
-                        else {
-                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                        }
-
-                        String resultJson = new Gson().toJson(result);
-                        OutputStream responseBody = exchange.getResponseBody();
-                        Extensions.writeString(resultJson, responseBody);
-
-                        responseBody.close();
-                    }
-                    else {
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
-
-                        String resultJson = new Gson().toJson(authResult);
-                        OutputStream responseBody = exchange.getResponseBody();
-                        Extensions.writeString(resultJson, responseBody);
-
-                        responseBody.close();
-                    }
+                    handleResult(exchange, result);
+                    exchange.getResponseBody().close();
+                }
+                else {
+                    // Handle failed user authentication
+                    handleResult(exchange, authResult);
+                    exchange.getResponseBody().close();
                 }
             }
             else {
@@ -84,10 +59,10 @@ public class EventHandler implements HttpHandler {
         }
     }
 
-    private EventRequest getRequestFromPath(String path) {
+    private EventRequest getRequestFromPath(String path, String activeUserName) {
         String[] pathParameters = path.split("/");
         if (pathParameters.length == 3) {
-            return new EventRequest(pathParameters[2]);
+            return new EventRequest(pathParameters[2], activeUserName);
         }
 
         return null;

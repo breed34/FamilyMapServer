@@ -34,17 +34,10 @@ public class UserDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void insert(User user) throws DataAccessException {
-        String sql = "INSERT INTO User (Username, Password, Email, FirstName, LastName, " +
-                "Gender, PersonId) VALUES(?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO user (username, password, email, firstName, lastName, " +
+                "gender, personId) VALUES(?,?,?,?,?,?,?);";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getEmail());
-            stmt.setString(4, user.getFirstName());
-            stmt.setString(5, user.getLastName());
-            stmt.setString(6, user.getGender());
-            stmt.setString(7, user.getPersonId());
-
+            addUserDataToStatement(user, stmt);
             stmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -61,25 +54,13 @@ public class UserDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public User find(String username) throws DataAccessException {
-        User user;
         ResultSet rs;
-        String sql = "SELECT * FROM User WHERE Username = ?;";
+        String sql = "SELECT * FROM user WHERE username = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             rs = stmt.executeQuery();
-            if (rs.next()) {
-                user = new User(rs.getString("Username"),
-                        rs.getString("Password"),
-                        rs.getString("Email"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Gender"),
-                        rs.getString("PersonId"));
-                return user;
-            }
-            else {
-                return null;
-            }
+
+            return getUserFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -94,27 +75,12 @@ public class UserDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public ArrayList<User> findAll() throws DataAccessException {
-        ArrayList<User> users = new ArrayList<>();
         ResultSet rs;
-        String sql = "SELECT * FROM User;";
+        String sql = "SELECT * FROM user;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             rs = stmt.executeQuery();
-            while (rs.next()) {
-                users.add(new User(rs.getString("Username"),
-                        rs.getString("Password"),
-                        rs.getString("Email"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Gender"),
-                        rs.getString("PersonId")));
-            }
 
-            if (users.size() > 0) {
-                return users;
-            }
-            else {
-                return null;
-            }
+            return getUsersFromResultSet(rs);
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -128,7 +94,7 @@ public class UserDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void clear() throws DataAccessException {
-        String sql = "DELETE FROM User;";
+        String sql = "DELETE FROM user;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
         }
@@ -145,7 +111,7 @@ public class UserDao {
      * @throws DataAccessException if an error happens during the database transaction.
      */
     public void removeUser(String username) throws DataAccessException {
-        String sql = "DELETE FROM User WHERE Username = ?;";
+        String sql = "DELETE FROM user WHERE username = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.executeUpdate();
@@ -153,6 +119,51 @@ public class UserDao {
         catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error encountered while removing a user.");
+        }
+    }
+
+    private void addUserDataToStatement(User user, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, user.getUsername());
+        stmt.setString(2, user.getPassword());
+        stmt.setString(3, user.getEmail());
+        stmt.setString(4, user.getFirstName());
+        stmt.setString(5, user.getLastName());
+        stmt.setString(6, user.getGender());
+        stmt.setString(7, user.getPersonID());
+    }
+
+    private User getUserFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            return new User(rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("email"),
+                    rs.getString("firstName"),
+                    rs.getString("lastName"),
+                    rs.getString("gender"),
+                    rs.getString("personId"));
+        }
+        else {
+            return null;
+        }
+    }
+
+    private ArrayList<User> getUsersFromResultSet(ResultSet rs) throws SQLException {
+        ArrayList<User> users = new ArrayList<>();
+        while (rs.next()) {
+            users.add(new User(rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("email"),
+                    rs.getString("firstName"),
+                    rs.getString("lastName"),
+                    rs.getString("gender"),
+                    rs.getString("personId")));
+        }
+
+        if (users.size() > 0) {
+            return users;
+        }
+        else {
+            return null;
         }
     }
 }

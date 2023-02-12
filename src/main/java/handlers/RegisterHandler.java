@@ -2,21 +2,18 @@ package handlers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import request.RegisterRequest;
 import result.RegisterResult;
 import services.RegisterService;
-import utilities.Extensions;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
  * The handler object for registering a new user.
  */
-public class RegisterHandler implements HttpHandler {
+public class RegisterHandler extends HandlerBase {
     /**
      * Handles registering a new user.
      *
@@ -29,23 +26,13 @@ public class RegisterHandler implements HttpHandler {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
                 InputStream requestBody = exchange.getRequestBody();
-                String requestJson = Extensions.readString(requestBody);
+                String requestJson = readString(requestBody);
 
                 RegisterRequest request = new Gson().fromJson(requestJson, RegisterRequest.class);
                 RegisterResult result = new RegisterService().register(request);
 
-                if (result.isSuccess()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                }
-                else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                }
-
-                String resultJson = new Gson().toJson(result);
-                OutputStream responseBody = exchange.getResponseBody();
-                Extensions.writeString(resultJson, responseBody);
-
-                responseBody.close();
+                handleResult(exchange, result);
+                exchange.getResponseBody().close();
             }
             else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);

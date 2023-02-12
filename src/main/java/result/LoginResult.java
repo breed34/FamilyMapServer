@@ -18,9 +18,9 @@ public class LoginResult extends ResultBase {
     private String username;
 
     /**
-     * The personId of the person associated with the user.
+     * The personID of the person associated with the user.
      */
-    private String personId;
+    private String personID;
 
     /**
      * Creates a successful result object for logging in a user.
@@ -32,7 +32,7 @@ public class LoginResult extends ResultBase {
         super();
         this.authtoken = authtoken.getAuthtoken();
         this.username = authtoken.getUsername();
-        this.personId = user.getPersonId();
+        this.personID = user.getPersonID();
     }
 
     /**
@@ -52,7 +52,7 @@ public class LoginResult extends ResultBase {
         return username;
     }
 
-    public String getPersonId() {
-        return personId;
+    public String getPersonID() {
+        return personID;
     }
 }

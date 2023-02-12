@@ -2,13 +2,11 @@ package daos;
 
 import exceptions.DataAccessException;
 import models.Authtoken;
-import models.Event;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +35,7 @@ public class AuthtokenDaoTest {
     @Test
     public void insertPass() throws DataAccessException {
         authtokenDao.insert(sampleToken1);
-        Authtoken compareTest = authtokenDao.findByToken(sampleToken1.getAuthtoken());
+        Authtoken compareTest = authtokenDao.find(sampleToken1.getAuthtoken());
         assertNotNull(compareTest);
         assertEquals(sampleToken1, compareTest);
     }
@@ -49,36 +47,19 @@ public class AuthtokenDaoTest {
     }
 
     @Test
-    public void findByTokenPass() throws DataAccessException {
+    public void findPass() throws DataAccessException {
         authtokenDao.insert(sampleToken1);
         authtokenDao.insert(sampleToken2);
-        Authtoken compareTest = authtokenDao.findByToken(sampleToken2.getAuthtoken());
+        Authtoken compareTest = authtokenDao.find(sampleToken2.getAuthtoken());
         assertNotNull(compareTest);
         assertEquals(sampleToken2, compareTest);
     }
 
     @Test
-    public void findByTokenFail() throws DataAccessException {
+    public void findFail() throws DataAccessException {
         authtokenDao.insert(sampleToken1);
         authtokenDao.insert(sampleToken2);
-        Authtoken compareTest = authtokenDao.findByToken("DOES_NOT_EXIST");
-        assertNull(compareTest);
-    }
-
-    @Test
-    public void findByUserPass() throws DataAccessException {
-        authtokenDao.insert(sampleToken1);
-        authtokenDao.insert(sampleToken2);
-        Authtoken compareTest = authtokenDao.findByUser(sampleToken2.getUsername());
-        assertNotNull(compareTest);
-        assertEquals(sampleToken2, compareTest);
-    }
-
-    @Test
-    public void findByUserFail() throws DataAccessException {
-        authtokenDao.insert(sampleToken1);
-        authtokenDao.insert(sampleToken2);
-        Authtoken compareTest = authtokenDao.findByUser("DOES_NOT_EXIST");
+        Authtoken compareTest = authtokenDao.find("DOES_NOT_EXIST");
         assertNull(compareTest);
     }
 
@@ -91,14 +72,14 @@ public class AuthtokenDaoTest {
     public void clearWithDataPass() throws DataAccessException {
         authtokenDao.insert(sampleToken1);
         authtokenDao.insert(sampleToken2);
-        Authtoken shouldFind1 = authtokenDao.findByToken(sampleToken1.getAuthtoken());
-        Authtoken shouldFind2 = authtokenDao.findByToken(sampleToken2.getAuthtoken());
+        Authtoken shouldFind1 = authtokenDao.find(sampleToken1.getAuthtoken());
+        Authtoken shouldFind2 = authtokenDao.find(sampleToken2.getAuthtoken());
         assertNotNull(shouldFind1);
         assertNotNull(shouldFind2);
 
         authtokenDao.clear();
-        Authtoken shouldNotFind1 = authtokenDao.findByToken(sampleToken1.getAuthtoken());
-        Authtoken shouldNotFind2 = authtokenDao.findByToken(sampleToken2.getAuthtoken());
+        Authtoken shouldNotFind1 = authtokenDao.find(sampleToken1.getAuthtoken());
+        Authtoken shouldNotFind2 = authtokenDao.find(sampleToken2.getAuthtoken());
         assertNull(shouldNotFind1);
         assertNull(shouldNotFind2);
     }
@@ -111,11 +92,11 @@ public class AuthtokenDaoTest {
     @Test
     public void clearByUserWithDataPass() throws DataAccessException {
         authtokenDao.insert(sampleToken1);
-        Authtoken shouldFind1 = authtokenDao.findByToken(sampleToken1.getAuthtoken());
+        Authtoken shouldFind1 = authtokenDao.find(sampleToken1.getAuthtoken());
         assertNotNull(shouldFind1);
 
         authtokenDao.clearByUser(sampleToken1.getUsername());
-        Authtoken shouldNotFind1 = authtokenDao.findByToken(sampleToken1.getAuthtoken());
+        Authtoken shouldNotFind1 = authtokenDao.find(sampleToken1.getAuthtoken());
         assertNull(shouldNotFind1);
     }
 }

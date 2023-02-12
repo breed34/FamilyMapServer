@@ -37,6 +37,7 @@ public class EventsService {
 
             ArrayList<Event> events = new EventDao(db.getConnection()).findByUser(request.getActiveUserName());
 
+            // Handle if no events were found
             if (events == null) {
                 logger.info("Error: No events were found.");
                 db.closeConnection(false);

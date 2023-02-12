@@ -1,21 +1,23 @@
 package request;
 
 /**
- * The request object for getting an event by its eventId.
+ * The request object for getting an event by its eventID.
  */
 public class EventRequest extends AuthRequiredRequestBase {
     /**
-     * The eventId of the event to get from the database.
+     * The eventID of the event to get from the database.
      */
-    private String eventId;
+    private String eventID;
 
     /**
-     * Creates a request object for getting an event by its eventId.
+     * Creates a request object for getting an event by its eventID.
      *
-     * @param eventId the eventId of the event to get from the database.
+     * @param activeUserName the username of the active user.
+     * @param eventID the eventID of the event to get from the database.
      */
-    public EventRequest(String eventId) {
-        this.eventId = eventId;
+    public EventRequest(String eventID, String activeUserName) {
+        super(activeUserName);
+        this.eventID = eventID;
     }
 
     /**
@@ -24,10 +26,10 @@ public class EventRequest extends AuthRequiredRequestBase {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return super.isValid() && eventId != null && !eventId.isBlank();
+        return super.isValid() && eventID != null && !eventID.isBlank();
     }
 
     public String getEventId() {
-        return eventId;
+        return eventID;
     }
 }

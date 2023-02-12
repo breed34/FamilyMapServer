@@ -33,8 +33,11 @@ public class PersonService {
         try {
             db.openConnection();
 
-            Person person = new PersonDao(db.getConnection()).find(request.getPersonId());
-            if (person == null || !person.getAssociatedUsername().equals(request.getActiveUserName())) {
+            Person person = new PersonDao(db.getConnection()).find(request.getPersonID(),
+                    request.getActiveUserName());
+
+            // Handle if no person was found
+            if (person == null) {
                 logger.info("Error: The desired person was not found.");
                 db.closeConnection(false);
                 return new PersonResult("Error: The desired person was not found.");
@@ -46,7 +49,7 @@ public class PersonService {
         catch (Exception ex) {
             ex.printStackTrace();
             db.closeConnection(false);
-            return new PersonResult("Error: An error occurred while trying to find the person by personId.");
+            return new PersonResult("Error: An error occurred while trying to find the person by personID.");
         }
     }
 }

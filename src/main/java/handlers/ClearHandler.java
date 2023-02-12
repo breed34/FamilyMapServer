@@ -1,20 +1,16 @@
 package handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import result.ClearResult;
 import services.ClearService;
-import utilities.Extensions;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
  * The handler object for clearing the database.
  */
-public class ClearHandler implements HttpHandler {
+public class ClearHandler extends HandlerBase {
     /**
      * Handles clearing the database.
      *
@@ -27,18 +23,9 @@ public class ClearHandler implements HttpHandler {
         try {
             if (exchange.getRequestMethod().toLowerCase().equals("post")) {
                 ClearResult result = new ClearService().clear();
-                if (result.isSuccess()) {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                }
-                else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                }
 
-                String resultJson = new Gson().toJson(result);
-                OutputStream responseBody = exchange.getResponseBody();
-                Extensions.writeString(resultJson, responseBody);
-
-                responseBody.close();
+                handleResult(exchange, result);
+                exchange.getResponseBody().close();
             }
             else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);

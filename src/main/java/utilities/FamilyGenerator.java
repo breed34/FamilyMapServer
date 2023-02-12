@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -56,7 +57,7 @@ public class FamilyGenerator {
     }
 
     /**
-     * Adds fake family history data for a given user to the database.
+     * Recursively adds fake family history data for a given user to the database.
      *
      * @param conn the database connection.
      * @param person the current person to add data for.
@@ -73,41 +74,48 @@ public class FamilyGenerator {
         FamilyGenerator generator = new FamilyGenerator();
 
         if (numberOfGenerations > 0) {
+            // Generate parent details
             father = generator.generatePerson(username, "m");
             mother = generator.generatePerson(username, "f");
 
             int fatherBirthYear = generator.generateParentBirthYear(birthYear);
             int motherBirthYear = generator.generateParentBirthYear(birthYear);
-            father.setSpouseId(mother.getPersonId());
-            mother.setSpouseId(father.getPersonId());
+            father.setSpouseID(mother.getPersonID());
+            mother.setSpouseID(father.getPersonID());
 
-            generator.addParentEvents(conn, father.getPersonId(),
-                    mother.getPersonId(), username, fatherBirthYear, motherBirthYear);
+            generator.addParentEvents(conn, father.getPersonID(),
+                    mother.getPersonID(), username, fatherBirthYear, motherBirthYear);
 
             generateGenerations(conn, father, username, fatherBirthYear, numberOfGenerations - 1);
             generateGenerations(conn, mother, username, motherBirthYear, numberOfGenerations - 1);
         }
 
-        generator.addBirthEvent(conn, person.getPersonId(), username, birthYear);
+        // Add personal data for the individual
+        generator.addBirthEvent(conn, person.getPersonID(), username, birthYear);
         if (father != null && mother != null) {
-            person.setFatherId(father.getPersonId());
-            person.setMotherId(mother.getPersonId());
+            person.setFatherID(father.getPersonID());
+            person.setMotherID(mother.getPersonID());
         }
 
         new PersonDao(conn).insert(person);
     }
 
     /**
-     * Generates a fake birth year for a user.
+     * Generates a fake birth year for a user 18-60 years before today's date.
      *
      * @return the fake birth year.
      */
-    public static int generateUserBirthYear() {
-        return LocalDate.now().getYear() - Extensions.getRandomIntInRange(18, 60);
+    public static int generateUserBirthYear() throws FileNotFoundException {
+        FamilyGenerator generator = new FamilyGenerator();
+        return LocalDate.now().getYear() - generator.getRandomIntInRange(18, 60);
+    }
+
+    private int getRandomIntInRange(int min, int max) {
+        return new Random().nextInt((max - min)) + min;
     }
 
     private Person generatePerson(String username, String gender) {
-        String personId = UUID.randomUUID().toString();
+        String personID = UUID.randomUUID().toString();
         assert gender.equals("m") || gender.equals("f");
 
         String firstName;
@@ -118,31 +126,31 @@ public class FamilyGenerator {
             firstName = femaleNames.getRandomName();
         }
 
-        return new Person(personId,
+        return new Person(personID,
                 username,
                 firstName,
                 surnames.getRandomName(),
                 gender);
     }
 
-    private void addParentEvents(Connection conn, String fatherId, String motherId, String username,
+    private void addParentEvents(Connection conn, String fatherID, String motherID, String username,
                                              int fatherBirthYear, int motherBirthYear) throws DataAccessException {
-        int marriageYear = generateMarriageYear(fatherBirthYear);
+        int marriageYear = generateMarriageYear(fatherBirthYear, motherBirthYear);
         int fatherDeathYear = generateDeathYear(fatherBirthYear);
         int motherDeathYear = generateDeathYear(motherBirthYear);
 
-        addMarriageEvent(conn, fatherId, motherId, username, marriageYear);
-        addDeathEvent(conn, fatherId, username, fatherDeathYear);
-        addDeathEvent(conn, motherId, username, motherDeathYear);
+        addMarriageEvent(conn, fatherID, motherID, username, marriageYear);
+        addDeathEvent(conn, fatherID, username, fatherDeathYear);
+        addDeathEvent(conn, motherID, username, motherDeathYear);
     }
 
-    private void addBirthEvent(Connection conn, String personId, String username,
+    private void addBirthEvent(Connection conn, String personID, String username,
                                int birthYear) throws DataAccessException {
         Location location = locations.getRandomLocation();
-        String eventId = UUID.randomUUID().toString();
-        Event birthEvent = new Event(eventId,
+        String eventID = UUID.randomUUID().toString();
+        Event birthEvent = new Event(eventID,
                 username,
-                personId,
+                personID,
                 location.getLatitude(),
                 location.getLongitude(),
                 location.getCountry(),
@@ -153,7 +161,7 @@ public class FamilyGenerator {
         new EventDao(conn).insert(birthEvent);
     }
 
-    private void addMarriageEvent(Connection conn, String fatherId, String motherId, String username,
+    private void addMarriageEvent(Connection conn, String fatherID, String motherID, String username,
                                   int marriageYear) throws DataAccessException {
         Location location = locations.getRandomLocation();
         String fatherEventId = UUID.randomUUID().toString();
@@ -161,7 +169,7 @@ public class FamilyGenerator {
 
         Event fatherMarriage = new Event(fatherEventId,
                 username,
-                fatherId,
+                fatherID,
                 location.getLatitude(),
                 location.getLongitude(),
                 location.getCountry(),
@@ -170,7 +178,7 @@ public class FamilyGenerator {
                 marriageYear);
         Event motherMarriage = new Event(motherEventId,
                 username,
-                motherId,
+                motherID,
                 location.getLatitude(),
                 location.getLongitude(),
                 location.getCountry(),
@@ -182,13 +190,13 @@ public class FamilyGenerator {
         new EventDao(conn).insert(motherMarriage);
     }
 
-    private void addDeathEvent(Connection conn, String personId, String username,
+    private void addDeathEvent(Connection conn, String personID, String username,
                                int deathYear) throws DataAccessException {
         Location location = locations.getRandomLocation();
-        String eventId = UUID.randomUUID().toString();
-        Event deathEvent = new Event(eventId,
+        String eventID = UUID.randomUUID().toString();
+        Event deathEvent = new Event(eventID,
                 username,
-                personId,
+                personID,
                 location.getLatitude(),
                 location.getLongitude(),
                 location.getCountry(),
@@ -200,14 +208,17 @@ public class FamilyGenerator {
     }
 
     private int generateParentBirthYear(int childBirthYear) {
-        return childBirthYear - Extensions.getRandomIntInRange(18, 30);
+        return childBirthYear - getRandomIntInRange(18, 30);
     }
 
-    private int generateMarriageYear(int birthYear) {
-        return birthYear + Extensions.getRandomIntInRange(18, 25);
+    private int generateMarriageYear(int fatherBirthYear, int motherBirthYear) {
+        // Identifies the youngest parent
+        int youngestParentBirthYear = fatherBirthYear >= motherBirthYear ? fatherBirthYear : motherBirthYear;
+
+        return youngestParentBirthYear + getRandomIntInRange(18, 25);
     }
 
     private int generateDeathYear(int birthYear) {
-        return birthYear + Extensions.getRandomIntInRange(60, 90);
+        return birthYear + getRandomIntInRange(60, 90);
     }
 }

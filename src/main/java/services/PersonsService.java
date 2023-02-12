@@ -37,6 +37,7 @@ public class PersonsService {
 
             ArrayList<Person> persons = new PersonDao(db.getConnection()).findByUser(request.getActiveUserName());
 
+            // Handle if no persons were found
             if (persons == null) {
                 logger.info("Error: No persons were found.");
                 db.closeConnection(false);

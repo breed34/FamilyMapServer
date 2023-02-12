@@ -35,11 +35,13 @@ public class LoadService {
         try {
             db.openConnection();
 
+            // Clear the database of all information
             new UserDao(db.getConnection()).clear();
             new PersonDao(db.getConnection()).clear();
             new AuthtokenDao(db.getConnection()).clear();
             new EventDao(db.getConnection()).clear();
 
+            // Add all users, persons, and events to the database
             for (User user : request.getUsers()) {
                 new UserDao(db.getConnection()).insert(user);
             }
@@ -52,6 +54,7 @@ public class LoadService {
                 new EventDao(db.getConnection()).insert(event);
             }
 
+            // Check how many user, persons,  and events were added to the database
             ArrayList<User> newUsers = new UserDao(db.getConnection()).findAll();
             ArrayList<Person> newPersons = new PersonDao(db.getConnection()).findAll();
             ArrayList<Event> newEvents = new EventDao(db.getConnection()).findAll();

@@ -50,7 +50,7 @@ public class PersonsServiceTest {
     }
 
     @Test
-    void getAllPersonsFailNoSuchEvent() {
+    void getAllPersonsFail() {
         PersonsResult result = personsService.getAllPersons(failRequest);
 
         assertFalse(result.isSuccess());
