@@ -60,11 +60,11 @@ public class RegisterRequest {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return  username != null && !username.isBlank() &&
-                password != null && !password.isBlank() &&
-                email != null && !email.isBlank() &&
-                firstName != null && !firstName.isBlank() &&
-                lastName != null && !lastName.isBlank() &&
+        return  username != null && !username.trim().isEmpty() &&
+                password != null && !password.trim().isEmpty() &&
+                email != null && !email.trim().isEmpty() &&
+                firstName != null && !firstName.trim().isEmpty() &&
+                lastName != null && !lastName.trim().isEmpty() &&
                 (gender.toLowerCase().equals("m") || gender.toLowerCase().equals("f"));
     }
 
