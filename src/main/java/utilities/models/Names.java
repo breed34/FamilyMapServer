@@ -1,6 +1,6 @@
 package utilities.models;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -11,7 +11,7 @@ public class Names {
     /**
      * The list of names.
      */
-    private ArrayList<String> data;
+    private List<String> data;
 
     /**
      * Gets a random name from the list of names.

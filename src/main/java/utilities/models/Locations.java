@@ -1,6 +1,6 @@
 package utilities.models;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -11,7 +11,7 @@ public class Locations {
     /**
      * The list of locations.
      */
-    private ArrayList<Location> data;
+    private List<Location> data;
 
     /**
      * Gets a random location from the list of locations.

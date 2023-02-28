@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,11 +81,11 @@ public class EventDaoTest {
     public void findByUserPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        ArrayList<Event> expected = new ArrayList<>();
+        List<Event> expected = new ArrayList<>();
         expected.add(sampleEvent1);
         expected.add(sampleEvent2);
 
-        ArrayList<Event> compareTest = eventDao.findByUser(sampleEvent2.getAssociatedUsername());
+        List<Event> compareTest = eventDao.findByUser(sampleEvent2.getAssociatedUsername());
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
@@ -93,7 +94,7 @@ public class EventDaoTest {
     public void findByUserFail() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        ArrayList<Event> compareTest = eventDao.findByUser("DOES_NOT_EXIST");
+        List<Event> compareTest = eventDao.findByUser("DOES_NOT_EXIST");
         assertNull(compareTest);
     }
 
@@ -101,18 +102,18 @@ public class EventDaoTest {
     public void findAllPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        ArrayList<Event> expected = new ArrayList<>();
+        List<Event> expected = new ArrayList<>();
         expected.add(sampleEvent1);
         expected.add(sampleEvent2);
 
-        ArrayList<Event> compareTest = eventDao.findAll();
+        List<Event> compareTest = eventDao.findAll();
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
 
     @Test
     public void findAllFail() throws DataAccessException {
-        ArrayList<Event> compareTest = eventDao.findAll();
+        List<Event> compareTest = eventDao.findAll();
         assertNull(compareTest);
     }
 
@@ -146,11 +147,11 @@ public class EventDaoTest {
     public void clearByUserWithDataPass() throws DataAccessException {
         eventDao.insert(sampleEvent1);
         eventDao.insert(sampleEvent2);
-        ArrayList<Event> shouldFind1 = eventDao.findByUser(sampleEvent1.getAssociatedUsername());
+        List<Event> shouldFind1 = eventDao.findByUser(sampleEvent1.getAssociatedUsername());
         assertNotNull(shouldFind1);
 
         eventDao.clearByUser(sampleEvent1.getAssociatedUsername());
-        ArrayList<Event> shouldNotFind1 = eventDao.findByUser(sampleEvent1.getAssociatedUsername());
+        List<Event> shouldNotFind1 = eventDao.findByUser(sampleEvent1.getAssociatedUsername());
         assertNull(shouldNotFind1);
     }
 }

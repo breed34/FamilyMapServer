@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The object for performing database operations with events.
@@ -77,7 +78,7 @@ public class EventDao {
      * @return a list of all the events associated with an associated user or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<Event> findByUser(String associatedUsername) throws DataAccessException {
+    public List<Event> findByUser(String associatedUsername) throws DataAccessException {
         ResultSet rs;
         String sql = "SELECT * FROM event WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -98,7 +99,7 @@ public class EventDao {
      * @return a list of all events or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<Event> findAll() throws DataAccessException {
+    public List<Event> findAll() throws DataAccessException {
         ResultSet rs;
         String sql = "SELECT * FROM event";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -175,8 +176,8 @@ public class EventDao {
         }
     }
 
-    private ArrayList<Event> getEventsFromResultSet(ResultSet rs) throws SQLException {
-        ArrayList<Event> events = new ArrayList<>();
+    private List<Event> getEventsFromResultSet(ResultSet rs) throws SQLException {
+        List<Event> events = new ArrayList<>();
         while (rs.next()) {
             events.add(new Event(rs.getString("eventID"),
                     rs.getString("associatedUsername"),

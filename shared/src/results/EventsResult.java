@@ -2,7 +2,7 @@ package results;
 
 import models.Event;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The result object for getting all events associated
@@ -12,7 +12,7 @@ public class EventsResult extends ResultBase {
     /**
      * The list of events retrieved from the database.
      */
-    private ArrayList<Event> data;
+    private List<Event> data;
 
     /**
      * Creates a successful result object for getting all events associated
@@ -20,7 +20,7 @@ public class EventsResult extends ResultBase {
      *
      * @param data the events retrieved from the database.
      */
-    public EventsResult(ArrayList<Event> data) {
+    public EventsResult(List<Event> data) {
         super();
         this.data = data;
     }
@@ -35,7 +35,7 @@ public class EventsResult extends ResultBase {
         super(message, false);
     }
 
-    public ArrayList<Event> getData() {
+    public List<Event> getData() {
         return data;
     }
 }
