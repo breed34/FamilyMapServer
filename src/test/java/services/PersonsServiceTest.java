@@ -11,6 +11,7 @@ import requests.PersonsRequest;
 import results.PersonsResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +37,7 @@ public class PersonsServiceTest {
 
     @Test
     public void getAllPersonsPass() {
-        ArrayList<Person> expected = new ArrayList<>();
+        List<Person> expected = new ArrayList<>();
         expected.add(new Person("Bob123A", "Gale", "Bob",
                 "Henderson", "m"));
         expected.add(new Person("Janet456A", "Gale", "Janet",

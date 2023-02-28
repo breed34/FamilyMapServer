@@ -11,6 +11,7 @@ import requests.EventsRequest;
 import results.EventsResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +36,7 @@ public class EventsServiceTest {
 
     @Test
     public void getAllEventsPass() {
-        ArrayList<Event> expected = new ArrayList<>();
+        List<Event> expected = new ArrayList<>();
         expected.add(new Event("Skiing_456A", "Gale", "Gale123A",
                 47.2f, 120.3f, "USA", "Tucson",
                 "Skiing_Downhill", 2023));

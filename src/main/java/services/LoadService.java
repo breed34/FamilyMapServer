@@ -7,7 +7,7 @@ import models.User;
 import requests.LoadRequest;
 import results.LoadResult;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -55,9 +55,9 @@ public class LoadService {
             }
 
             // Check how many user, persons,  and events were added to the database
-            ArrayList<User> newUsers = new UserDao(db.getConnection()).findAll();
-            ArrayList<Person> newPersons = new PersonDao(db.getConnection()).findAll();
-            ArrayList<Event> newEvents = new EventDao(db.getConnection()).findAll();
+            List<User> newUsers = new UserDao(db.getConnection()).findAll();
+            List<Person> newPersons = new PersonDao(db.getConnection()).findAll();
+            List<Event> newEvents = new EventDao(db.getConnection()).findAll();
 
             int numberOfUsers = newUsers != null ? newUsers.size() : 0;
             int numberOfPersons = newPersons != null ? newPersons.size() : 0;

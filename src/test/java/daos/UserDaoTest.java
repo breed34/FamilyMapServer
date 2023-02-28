@@ -1,7 +1,6 @@
 package daos;
 
 import exceptions.DataAccessException;
-import models.Person;
 import models.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,18 +71,18 @@ public class UserDaoTest {
     public void findAllPass() throws DataAccessException {
         userDao.insert(sampleUser1);
         userDao.insert(sampleUser2);
-        ArrayList<User> expected = new ArrayList<>();
+        List<User> expected = new ArrayList<>();
         expected.add(sampleUser1);
         expected.add(sampleUser2);
 
-        ArrayList<User> compareTest = userDao.findAll();
+        List<User> compareTest = userDao.findAll();
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
 
     @Test
     public void findAllFail() throws DataAccessException {
-        ArrayList<User> compareTest = userDao.findAll();
+        List<User> compareTest = userDao.findAll();
         assertNull(compareTest);
     }
 

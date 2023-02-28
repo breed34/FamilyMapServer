@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,11 +79,11 @@ public class PersonDaoTest {
     public void findByUserPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        ArrayList<Person> expected = new ArrayList<>();
+        List<Person> expected = new ArrayList<>();
         expected.add(samplePerson1);
         expected.add(samplePerson2);
 
-        ArrayList<Person> compareTest = personDao.findByUser(samplePerson2.getAssociatedUsername());
+        List<Person> compareTest = personDao.findByUser(samplePerson2.getAssociatedUsername());
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
@@ -91,7 +92,7 @@ public class PersonDaoTest {
     public void findByUserFail() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        ArrayList<Person> compareTest = personDao.findByUser("DOES_NOT_EXIST");
+        List<Person> compareTest = personDao.findByUser("DOES_NOT_EXIST");
         assertNull(compareTest);
     }
 
@@ -99,18 +100,18 @@ public class PersonDaoTest {
     public void findAllPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        ArrayList<Person> expected = new ArrayList<>();
+        List<Person> expected = new ArrayList<>();
         expected.add(samplePerson1);
         expected.add(samplePerson2);
 
-        ArrayList<Person> compareTest = personDao.findAll();
+        List<Person> compareTest = personDao.findAll();
         assertNotNull(compareTest);
         assertEquals(expected, compareTest);
     }
 
     @Test
     public void findAllFail() throws DataAccessException {
-        ArrayList<Person> compareTest = personDao.findAll();
+        List<Person> compareTest = personDao.findAll();
         assertNull(compareTest);
     }
 
@@ -144,11 +145,11 @@ public class PersonDaoTest {
     public void clearByUserWithDataPass() throws DataAccessException {
         personDao.insert(samplePerson1);
         personDao.insert(samplePerson2);
-        ArrayList<Person> shouldFind1 = personDao.findByUser(samplePerson1.getAssociatedUsername());
+        List<Person> shouldFind1 = personDao.findByUser(samplePerson1.getAssociatedUsername());
         assertNotNull(shouldFind1);
 
         personDao.clearByUser(samplePerson1.getAssociatedUsername());
-        ArrayList<Person> shouldNotFind1 = personDao.findByUser(samplePerson1.getAssociatedUsername());
+        List<Person> shouldNotFind1 = personDao.findByUser(samplePerson1.getAssociatedUsername());
         assertNull(shouldNotFind1);
     }
 }

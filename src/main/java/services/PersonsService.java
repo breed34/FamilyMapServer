@@ -6,7 +6,7 @@ import models.Person;
 import requests.PersonsRequest;
 import results.PersonsResult;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -35,7 +35,7 @@ public class PersonsService {
         try {
             db.openConnection();
 
-            ArrayList<Person> persons = new PersonDao(db.getConnection()).findByUser(request.getActiveUserName());
+            List<Person> persons = new PersonDao(db.getConnection()).findByUser(request.getActiveUserName());
 
             // Handle if no persons were found
             if (persons == null) {

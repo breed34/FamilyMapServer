@@ -2,7 +2,7 @@ package results;
 
 import models.Person;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The result object for getting all persons associated
@@ -12,7 +12,7 @@ public class PersonsResult extends ResultBase {
     /**
      * The list of persons retrieved from the database.
      */
-    private ArrayList<Person> data;
+    private List<Person> data;
 
     /**
      * Creates a successful result object for getting all persons associated
@@ -20,7 +20,7 @@ public class PersonsResult extends ResultBase {
      *
      * @param data the persons retrieved from the database.
      */
-    public PersonsResult(ArrayList<Person> data) {
+    public PersonsResult(List<Person> data) {
         super();
         this.data = data;
     }
@@ -35,7 +35,7 @@ public class PersonsResult extends ResultBase {
         super(message, false);
     }
 
-    public ArrayList<Person> getData() {
+    public List<Person> getData() {
         return data;
     }
 }

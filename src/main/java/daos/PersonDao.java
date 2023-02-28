@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The object for performing database operations with persons.
@@ -77,7 +78,7 @@ public class PersonDao {
      * @return a list of all the persons associated with an associated user or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<Person> findByUser(String associatedUsername) throws DataAccessException {
+    public List<Person> findByUser(String associatedUsername) throws DataAccessException {
         ResultSet rs;
         String sql = "SELECT * FROM person WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -98,7 +99,7 @@ public class PersonDao {
      * @return a list of all the persons or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<Person> findAll() throws DataAccessException {
+    public List<Person> findAll() throws DataAccessException {
         ResultSet rs;
         String sql = "SELECT * FROM person;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -157,8 +158,8 @@ public class PersonDao {
         stmt.setString(8, person.getSpouseID());
     }
 
-    private ArrayList<Person> getPersonsFromResultSet(ResultSet rs) throws SQLException {
-        ArrayList<Person> persons = new ArrayList<>();
+    private List<Person> getPersonsFromResultSet(ResultSet rs) throws SQLException {
+        List<Person> persons = new ArrayList<>();
         while (rs.next()) {
             persons.add(new Person(rs.getString("personId"),
                     rs.getString("associatedUsername"),

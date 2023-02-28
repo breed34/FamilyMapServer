@@ -10,6 +10,7 @@ import requests.LoadRequest;
 import results.LoadResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,9 +48,9 @@ public class LoadServiceTest {
     }
 
     private LoadRequest generateRequest1() {
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<Person> persons = new ArrayList<>();
-        ArrayList<Event> events = new ArrayList<>();
+        List<User> users = new ArrayList<>();
+        List<Person> persons = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
 
         users.add(new User("Bean123", "cocoPowPow33", "bean123@email.com",
                 "Bob", "Henderson", "m", "Bob123A"));
@@ -67,9 +68,9 @@ public class LoadServiceTest {
     }
 
     private LoadRequest generateRequest2() {
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<Person> persons = new ArrayList<>();
-        ArrayList<Event> events = new ArrayList<>();
+        List<User> users = new ArrayList<>();
+        List<Person> persons = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
 
         users.add(new User("Bean123", "cocoPowPow33", "bean123@email.com",
                 "Bob", "Henderson", "m", "Bob123A"));

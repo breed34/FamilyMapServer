@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The object for performing database operations with users.
@@ -74,7 +75,7 @@ public class UserDao {
      * @return a list of all users or null if none are found.
      * @throws DataAccessException if an error happens during the database transaction.
      */
-    public ArrayList<User> findAll() throws DataAccessException {
+    public List<User> findAll() throws DataAccessException {
         ResultSet rs;
         String sql = "SELECT * FROM user;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -147,8 +148,8 @@ public class UserDao {
         }
     }
 
-    private ArrayList<User> getUsersFromResultSet(ResultSet rs) throws SQLException {
-        ArrayList<User> users = new ArrayList<>();
+    private List<User> getUsersFromResultSet(ResultSet rs) throws SQLException {
+        List<User> users = new ArrayList<>();
         while (rs.next()) {
             users.add(new User(rs.getString("username"),
                     rs.getString("password"),

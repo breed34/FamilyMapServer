@@ -6,7 +6,7 @@ import models.Event;
 import requests.EventsRequest;
 import results.EventsResult;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -35,7 +35,7 @@ public class EventsService {
         try {
             db.openConnection();
 
-            ArrayList<Event> events = new EventDao(db.getConnection()).findByUser(request.getActiveUserName());
+            List<Event> events = new EventDao(db.getConnection()).findByUser(request.getActiveUserName());
 
             // Handle if no events were found
             if (events == null) {
