@@ -45,7 +45,7 @@ public class FillRequest {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return  username != null && !username.isBlank() && generations >= 0;
+        return  username != null && !username.trim().isEmpty() && generations >= 0;
     }
 
     public String getUsername() {

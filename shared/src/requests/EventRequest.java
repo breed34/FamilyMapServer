@@ -26,7 +26,7 @@ public class EventRequest extends AuthRequiredRequestBase {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return super.isValid() && eventID != null && !eventID.isBlank();
+        return super.isValid() && eventID != null && !eventID.trim().isEmpty();
     }
 
     public String getEventId() {

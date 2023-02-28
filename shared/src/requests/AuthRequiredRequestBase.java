@@ -24,7 +24,7 @@ public abstract class AuthRequiredRequestBase {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return activeUserName != null && !activeUserName.isBlank();
+        return activeUserName != null && !activeUserName.trim().isEmpty();
     }
 
     public String getActiveUserName() {

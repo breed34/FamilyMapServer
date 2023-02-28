@@ -26,7 +26,7 @@ public class PersonRequest extends AuthRequiredRequestBase {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return super.isValid() && personID != null && !personID.isBlank();
+        return super.isValid() && personID != null && !personID.trim().isEmpty();
     }
 
     public String getPersonID() {

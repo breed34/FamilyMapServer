@@ -31,8 +31,8 @@ public class LoginRequest {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return  username != null && !username.isBlank() &&
-                password != null && !password.isBlank();
+        return  username != null && !username.trim().isEmpty() &&
+                password != null && !password.trim().isEmpty();
     }
 
     public String getUsername() {

@@ -24,7 +24,7 @@ public class AuthenticationRequest {
      * @return whether the request is valid.
      */
     public boolean isValid() {
-        return authtoken != null && !authtoken.isBlank();
+        return authtoken != null && !authtoken.trim().isEmpty();
     }
 
     public String getAuthtoken() {
